@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Roo AI configuration (may contain secrets)
+.roo/
