@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  frontend:
+    build: .
+    image: astorhouse:latest
+    container_name: astorhouse
+    environment:
+      - NODE_ENV=production
+      - DEBUG=false
+    expose:
+      - 80
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.astorhouse.rule=Host(`www.astorhouse.com.br`)"
+        - "traefik.http.routers.astorhouse.entrypoints=websecure"
+        - "traefik.http.routers.astorhouse.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.astorhouse.loadbalancer.server.port=80"
+        - "traefik.http.routers.astorhouse.priority=1"
+        - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+        - "traefik.http.services.astorhouse.loadbalancer.passHostHeader=true"
+        - "traefik.http.routers.astorhouse.middlewares=sslheader"
+    networks:
+      - rede_mibi
+
+networks:
+  rede_mibi:
+    external: true

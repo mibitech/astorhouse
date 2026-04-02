@@ -1,0 +1,205 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Paleta Pastor Australiano - Blue Merle e Tri-color */
+    --background: 0 0% 100%;
+    --foreground: 210 15% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 15% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 15% 20%;
+
+    /* Blue merle inspirado - azul acinzentado */
+    --primary: 210 25% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 210 30% 65%;
+    --primary-dark: 210 30% 30%;
+
+    /* Red merle/copper - tons de cobre avermelhado */
+    --secondary: 15 35% 60%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-light: 15 40% 75%;
+    --secondary-dark: 15 40% 45%;
+
+    --muted: 210 15% 96%;
+    --muted-foreground: 210 10% 55%;
+
+    /* Accent tan/copper dos tri-color */
+    --accent: 25 45% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 15% 88%;
+    --input: 210 15% 88%;
+    --ring: 210 25% 45%;
+
+    /* Design system enhancements */
+    --radius: 0.75rem;
+    
+    /* Brand-specific tokens */
+    --whatsapp: 142 71% 45%;
+    --whatsapp-hover: 142 71% 40%;
+    --whatsapp-foreground: 0 0% 100%;
+    
+    /* Gradientes inspirados nas cores do Pastor Australiano */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary-dark)), hsl(var(--primary-light)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-light)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    --gradient-merle: linear-gradient(135deg, hsl(210 30% 50%), hsl(15 35% 60%));
+    --gradient-tricolor: linear-gradient(135deg, hsl(210 30% 30%), hsl(25 45% 55%));
+    
+    /* Shadows suaves */
+    --shadow-elegant: 0 8px 25px -8px hsl(var(--primary) / 0.15);
+    --shadow-card: 0 4px 12px -4px hsl(var(--primary) / 0.1);
+    --shadow-soft: 0 2px 8px -2px hsl(var(--primary) / 0.08);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 210 20% 8%;
+    --foreground: 210 15% 90%;
+
+    --card: 210 20% 12%;
+    --card-foreground: 210 15% 90%;
+
+    --popover: 210 20% 12%;
+    --popover-foreground: 210 15% 90%;
+
+    /* Blue merle escuro para modo noturno */
+    --primary: 210 30% 70%;
+    --primary-foreground: 210 20% 8%;
+    --primary-light: 210 35% 80%;
+    --primary-dark: 210 25% 60%;
+
+    /* Red merle escuro */
+    --secondary: 15 40% 45%;
+    --secondary-foreground: 210 15% 90%;
+    --secondary-light: 15 45% 60%;
+    --secondary-dark: 15 35% 35%;
+
+    --muted: 210 15% 18%;
+    --muted-foreground: 210 10% 65%;
+
+    /* Accent tan/copper para dark mode */
+    --accent: 25 50% 60%;
+    --accent-foreground: 210 20% 8%;
+
+    --destructive: 0 65% 60%;
+    --destructive-foreground: 210 15% 90%;
+
+    --border: 210 15% 25%;
+    --input: 210 15% 25%;
+    --ring: 210 30% 70%;
+    
+    /* Gradientes dark mode inspirados no Pastor Australiano */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary-dark)), hsl(var(--primary-light)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary-dark)), hsl(var(--secondary)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    --gradient-merle: linear-gradient(135deg, hsl(210 25% 40%), hsl(15 40% 50%));
+    --gradient-tricolor: linear-gradient(135deg, hsl(210 25% 20%), hsl(25 50% 45%));
+    
+    /* Shadows dark mode */
+    --shadow-elegant: 0 8px 25px -8px hsl(0 0% 0% / 0.4);
+    --shadow-card: 0 4px 12px -4px hsl(0 0% 0% / 0.3);
+    --shadow-soft: 0 2px 8px -2px hsl(0 0% 0% / 0.2);
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Brand tokens - dark mode */
+    --whatsapp: 142 71% 45%;
+    --whatsapp-hover: 142 71% 40%;
+    --whatsapp-foreground: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .gradient-secondary {
+    background: var(--gradient-secondary);
+  }
+  
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+  
+  .gradient-merle {
+    background: var(--gradient-merle);
+  }
+  
+  .gradient-tricolor {
+    background: var(--gradient-tricolor);
+  }
+  
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+  
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+
+  .btn-whatsapp {
+    background-color: hsl(var(--whatsapp));
+    color: hsl(var(--whatsapp-foreground));
+  }
+
+  .btn-whatsapp:hover {
+    background-color: hsl(var(--whatsapp-hover));
+  }
+}
