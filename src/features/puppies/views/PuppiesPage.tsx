@@ -4,14 +4,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Dog, Phone, CheckCircle, DollarSign, Truck, Gift, HeadphonesIcon, Heart, Info, X } from 'lucide-react';
+import { Dog, Phone, CheckCircle, DollarSign, Truck, Gift, Heart, Info, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { usePuppiesByBreed } from '@/hooks/usePuppies';
-import { Puppy } from '@/types/puppy';
+import { usePuppiesByBreed } from '../controllers/usePuppies';
+import { Puppy } from '../models/puppy.types';
 
-const Puppies = () => {
+export const PuppiesPage = () => {
   const [selectedPuppy, setSelectedPuppy] = useState<Puppy | null>(null);
   
   // Fetch puppies from Supabase by breed
@@ -38,7 +38,7 @@ const Puppies = () => {
     }
   };
 
-  const renderPuppyCard = (puppy: any) => {
+  const renderPuppyCard = (puppy: Puppy) => {
     const breedLabels: { [key: string]: string } = {
       'australian_shepherd': 'Pastor Australiano',
       'pomeranian': 'Lulu da Pomerânia',
@@ -609,5 +609,3 @@ const Puppies = () => {
     </div>
   );
 };
-
-export default Puppies;

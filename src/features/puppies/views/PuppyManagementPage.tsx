@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Puppy, PuppyFormData } from '@/types/puppy';
+import { Puppy, PuppyFormData } from '../models/puppy.types';
 import { Plus, Edit, Trash2, Search, Filter, Heart, Loader2, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,7 +18,7 @@ import { z } from 'zod';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { toast } from 'sonner';
-import { usePuppies } from '@/hooks/usePuppies';
+import { usePuppies } from '../controllers/usePuppies';
 import ImageUploader from '@/components/ui/image-uploader';
 import { differenceInWeeks, parseISO } from 'date-fns';
 
@@ -56,7 +56,7 @@ const puppySchema = z.object({
   notes: z.string().optional().nullable(),
 });
 
-const PuppyManagement = () => {
+export const PuppyManagementPage = () => {
   const { puppies, loading, error, createPuppy, updatePuppy, deletePuppy } = usePuppies();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPuppy, setEditingPuppy] = useState<Puppy | null>(null);
@@ -948,4 +948,3 @@ const PuppyManagement = () => {
   );
 };
 
-export default PuppyManagement;

@@ -35,4 +35,4 @@ export interface Puppy {
   notes?: string;
 }
 
-export interface PuppyFormData extends Omit<Puppy, 'id' | 'created_at' | 'updated_at'> {}
+export type PuppyFormData = Omit<Puppy, 'id' | 'created_at' | 'updated_at'>;

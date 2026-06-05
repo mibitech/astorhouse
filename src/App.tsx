@@ -11,12 +11,11 @@ import { ContactPage, ContactManagementPage } from "@/features/contacts";
 import Dogs from "./pages/Dogs";
 import DogDetail from "./pages/DogDetail";
 import Training from "./pages/Training";
-import Puppies from "./pages/Puppies";
+import { PuppiesPage, PuppyManagementPage } from "@/features/puppies";
 import { HotelPage, HotelManagementPage } from "@/features/hotel";
 import Articles from "./pages/Articles";
 import NotFound from "./pages/NotFound";
 import DogManagement from "./pages/DogManagement";
-import PuppyManagement from "./pages/PuppyManagement";
 import { FaqPage, FaqManagementPage } from "@/features/faq";
 import { CompanyInfoManagementPage } from "@/features/company";
 import { WhatsAppBubble } from "@/components/ui/whatsapp-bubble";
@@ -36,14 +35,14 @@ const App = () => (
           <Route path="/caes" element={<Dogs />} />
           <Route path="/caes/:id" element={<DogDetail />} />
           <Route path="/adestramento" element={<Training />} />
-          <Route path="/filhotes" element={<Puppies />} />
+          <Route path="/filhotes" element={<PuppiesPage />} />
           <Route path="/hotel" element={<HotelPage />} />
           <Route path="/artigos" element={<Articles />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/contato" element={<ContactPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/admin/caes" element={<DogManagement />} />
-          <Route path="/admin/filhotes" element={<PuppyManagement />} />
+          <Route path="/admin/filhotes" element={<PuppyManagementPage />} />
           <Route path="/admin/faq" element={<FaqManagementPage />} />
           <Route path="/admin/hotel" element={<HotelManagementPage />} />
           <Route path="/admin/contatos" element={<ContactManagementPage />} />
