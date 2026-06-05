@@ -5,43 +5,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { MapPin, Clock, Star, Wifi, Car, Coffee, Camera, Heart, Shield, Users, Phone } from "lucide-react";
-import { useHotelPackages } from "@/hooks/useHotelPackages";
+import { MapPin, Clock, Star, Heart, Shield, Users, Phone } from "lucide-react";
+import { useHotelPackages } from "../controllers/useHotelPackages";
 import hotelInfra1 from "@/assets/hotel-infra-1.jpg";
 import hotelInfra2 from "@/assets/hotel-infra-2.jpg";
 import hotelInfra3 from "@/assets/hotel-infra-3.jpg";
 import hotelInfra4 from "@/assets/hotel-infra-4.jpg";
 import hotelInfra5 from "@/assets/hotel-infra-5.jpg";
 
-const Hotel = () => {
+export function HotelPage() {
   const { data: packages, isLoading } = useHotelPackages();
 
   const facilities = [
-    {
-      id: 1,
-      image: hotelInfra1,
-      name: "Infraestrutura 1",
-    },
-    {
-      id: 2,
-      image: hotelInfra2,
-      name: "Infraestrutura 2",
-    },
-    {
-      id: 3,
-      image: hotelInfra3,
-      name: "Infraestrutura 3",
-    },
-    {
-      id: 4,
-      image: hotelInfra4,
-      name: "Infraestrutura 4",
-    },
-    {
-      id: 5,
-      image: hotelInfra5,
-      name: "Infraestrutura 5",
-    },
+    { id: 1, image: hotelInfra1, name: "Infraestrutura 1" },
+    { id: 2, image: hotelInfra2, name: "Infraestrutura 2" },
+    { id: 3, image: hotelInfra3, name: "Infraestrutura 3" },
+    { id: 4, image: hotelInfra4, name: "Infraestrutura 4" },
+    { id: 5, image: hotelInfra5, name: "Infraestrutura 5" },
   ];
 
   const guests = [
@@ -296,6 +276,4 @@ const Hotel = () => {
       <Footer />
     </div>
   );
-};
-
-export default Hotel;
+}

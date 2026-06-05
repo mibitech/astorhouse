@@ -12,14 +12,13 @@ import Dogs from "./pages/Dogs";
 import DogDetail from "./pages/DogDetail";
 import Training from "./pages/Training";
 import Puppies from "./pages/Puppies";
-import Hotel from "./pages/Hotel";
+import { HotelPage, HotelManagementPage } from "@/features/hotel";
 import Articles from "./pages/Articles";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import DogManagement from "./pages/DogManagement";
 import PuppyManagement from "./pages/PuppyManagement";
 import { FaqPage, FaqManagementPage } from "@/features/faq";
-import HotelManagement from "./pages/HotelManagement";
 import ContactManagement from "./pages/ContactManagement";
 import CompanyInfoManagement from "./pages/CompanyInfoManagement";
 import { WhatsAppBubble } from "@/components/ui/whatsapp-bubble";
@@ -40,7 +39,7 @@ const App = () => (
           <Route path="/caes/:id" element={<DogDetail />} />
           <Route path="/adestramento" element={<Training />} />
           <Route path="/filhotes" element={<Puppies />} />
-          <Route path="/hotel" element={<Hotel />} />
+          <Route path="/hotel" element={<HotelPage />} />
           <Route path="/artigos" element={<Articles />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/contato" element={<Contact />} />
@@ -48,7 +47,7 @@ const App = () => (
           <Route path="/admin/caes" element={<DogManagement />} />
           <Route path="/admin/filhotes" element={<PuppyManagement />} />
           <Route path="/admin/faq" element={<FaqManagementPage />} />
-          <Route path="/admin/hotel" element={<HotelManagement />} />
+          <Route path="/admin/hotel" element={<HotelManagementPage />} />
           <Route path="/admin/contatos" element={<ContactManagement />} />
           <Route path="/admin/empresa" element={<CompanyInfoManagement />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

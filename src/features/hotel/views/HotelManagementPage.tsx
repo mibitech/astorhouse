@@ -31,10 +31,10 @@ import {
   useCreateHotelPackage,
   useUpdateHotelPackage,
   useDeleteHotelPackage,
-  HotelPackage,
-} from '@/hooks/useHotelPackages';
+} from '../controllers/useHotelPackages';
+import type { HotelPackage } from '../models/hotel.types';
 
-const HotelManagement = () => {
+export function HotelManagementPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: packages, isLoading } = useAllHotelPackages();
@@ -144,9 +144,7 @@ const HotelManagement = () => {
             </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>
-                  {editingPackage ? 'Editar Pacote' : 'Novo Pacote'}
-                </DialogTitle>
+                <DialogTitle>{editingPackage ? 'Editar Pacote' : 'Novo Pacote'}</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
@@ -182,9 +180,7 @@ const HotelManagement = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="features">
-                    Características (uma por linha)
-                  </Label>
+                  <Label htmlFor="features">Características (uma por linha)</Label>
                   <Textarea
                     id="features"
                     value={formData.features}
@@ -200,7 +196,9 @@ const HotelManagement = () => {
                     id="display_order"
                     type="number"
                     value={formData.display_order}
-                    onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, display_order: parseInt(e.target.value) })
+                    }
                   />
                 </div>
 
@@ -208,9 +206,7 @@ const HotelManagement = () => {
                   <Switch
                     id="is_popular"
                     checked={formData.is_popular}
-                    onCheckedChange={(checked) =>
-                      setFormData({ ...formData, is_popular: checked })
-                    }
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_popular: checked })}
                   />
                   <Label htmlFor="is_popular">Marcar como "Mais Popular"</Label>
                 </div>
@@ -219,24 +215,16 @@ const HotelManagement = () => {
                   <Switch
                     id="is_active"
                     checked={formData.is_active}
-                    onCheckedChange={(checked) =>
-                      setFormData({ ...formData, is_active: checked })
-                    }
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
                   />
                   <Label htmlFor="is_active">Ativo</Label>
                 </div>
 
                 <div className="flex justify-end gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setIsDialogOpen(false)}
-                  >
+                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                     Cancelar
                   </Button>
-                  <Button type="submit">
-                    {editingPackage ? 'Atualizar' : 'Criar'}
-                  </Button>
+                  <Button type="submit">{editingPackage ? 'Atualizar' : 'Criar'}</Button>
                 </div>
               </form>
             </DialogContent>
@@ -277,25 +265,15 @@ const HotelManagement = () => {
                         )}
                       </TableCell>
                       <TableCell>
-                        {pkg.is_popular && (
-                          <Badge variant="outline">Mais Popular</Badge>
-                        )}
+                        {pkg.is_popular && <Badge variant="outline">Mais Popular</Badge>}
                       </TableCell>
                       <TableCell>{pkg.display_order}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleOpenDialog(pkg)}
-                          >
+                          <Button variant="ghost" size="icon" onClick={() => handleOpenDialog(pkg)}>
                             <Pencil className="h-4 w-4" />
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDelete(pkg.id)}
-                          >
+                          <Button variant="ghost" size="icon" onClick={() => handleDelete(pkg.id)}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -311,6 +289,4 @@ const HotelManagement = () => {
       <Footer />
     </div>
   );
-};
-
-export default HotelManagement;
+}

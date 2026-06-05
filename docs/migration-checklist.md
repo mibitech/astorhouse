@@ -17,7 +17,7 @@
 | Feature | Legado (pages/hooks) | Destino (`src/features/*`) | Status |
 | ------- | -------------------- | -------------------------- | ------ |
 | **faq** | `pages/FAQ.tsx`, `pages/FAQManagement.tsx`, `hooks/useFAQ.ts` | `features/faq/` (models/services/controllers/views) | ✅ Migrado |
-| hotel | `pages/Hotel.tsx`, `pages/HotelManagement.tsx`, `hooks/useHotelPackages.ts` | `features/hotel/` | ⬜ Pendente |
+| **hotel** | `pages/Hotel.tsx`, `pages/HotelManagement.tsx`, `hooks/useHotelPackages.ts` | `features/hotel/` | ✅ Migrado |
 | puppies | `pages/Puppies.tsx`, `pages/PuppyManagement.tsx`, `hooks/usePuppies.ts`, `types/puppy.ts` | `features/puppies/` | ⬜ Pendente |
 | dogs | `pages/Dogs.tsx`, `pages/DogDetail.tsx`, `pages/DogManagement.tsx`, `hooks/useDogs.ts`, `types/dog.ts` | `features/dogs/` | ⬜ Pendente |
 | contacts | `pages/Contact.tsx`, `pages/ContactManagement.tsx`, `hooks/useContacts.ts` | `features/contacts/` | ⬜ Pendente |
@@ -44,3 +44,4 @@
 ## Log
 
 - **2026-06-05** — Feature **faq** migrada (primeira fatia/referência de padrão). Build e lint verdes. `App.tsx` e `Header.tsx` repontados; legado removido.
+- **2026-06-05** — Feature **hotel** migrada (controller mantém TanStack Query; services isolam o Supabase). Build e lint verdes. `App.tsx` repontado; legado removido.
