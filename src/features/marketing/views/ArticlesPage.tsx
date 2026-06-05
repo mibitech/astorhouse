@@ -6,7 +6,7 @@ import { BookOpen, Calendar, User, Heart, Brain, Stethoscope, Trophy } from 'luc
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
-const Articles = () => {
+export const ArticlesPage = () => {
   const featuredArticle = {
     title: 'Como Escolher o Cão Ideal para sua Família',
     excerpt: 'Um guia completo para ajudar você a tomar a melhor decisão na escolha do seu companheiro de quatro patas.',
@@ -252,5 +252,3 @@ const Articles = () => {
     </div>
   );
 };
-
-export default Articles;

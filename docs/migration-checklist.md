@@ -23,7 +23,7 @@
 | **contacts** | `pages/Contact.tsx`, `pages/ContactManagement.tsx`, `hooks/useContacts.ts` | `features/contacts/` | ✅ Migrado |
 | **company** | `pages/CompanyInfoManagement.tsx`, `hooks/useCompanyInfo.ts` | `features/company/` | ✅ Migrado |
 | **auth** | `pages/Login.tsx`, `contexts/AuthContext.tsx` | `features/auth/` | ✅ Migrado |
-| home/marketing | `pages/Index.tsx`, `pages/About.tsx`, `pages/Training.tsx`, `pages/Articles.tsx` | `features/marketing/` (a definir) | ⬜ Pendente |
+| **marketing** | `pages/Index.tsx`, `pages/About.tsx`, `pages/Training.tsx`, `pages/Articles.tsx` | `features/marketing/` (views estáticas: Home/About/Training/Articles) | ✅ Migrado |
 | _NotFound_ | `pages/NotFound.tsx` | mantém em `pages/` (catch-all) | ➖ Mantém |
 
 ## Compartilhados (permanecem fora de `features/`)
@@ -33,13 +33,13 @@
 - `hooks/use-mobile`, `hooks/use-toast` — utilitários globais.
 - `hooks/useImageUpload.ts` — usado por features de mídia; avaliar mover para `features/_shared` quando 2+ features dependerem.
 
-## Definition of Done (DoD) da migração
+## Definition of Done (DoD) da migração — ✅ CONCLUÍDA (2026-06-05)
 
-- [ ] Zero `⬜ Pendente` nesta tabela.
-- [ ] Zero pages legadas em `src/pages/` (exceto `NotFound.tsx`).
-- [ ] `App.tsx` importa as views de `@/features/*`.
-- [ ] `npm run lint` limpo · `npm run build` sem erros.
-- [ ] Hooks legados em `src/hooks/` removidos (exceto utilitários globais).
+- [x] Zero `⬜ Pendente` nesta tabela.
+- [x] Zero pages legadas em `src/pages/` (exceto `NotFound.tsx`).
+- [x] `App.tsx` importa as views de `@/features/*` (só `NotFound` vem de `./pages`).
+- [x] `npm run lint` sem **erros** (8 warnings pré-existentes de `react-refresh` em shadcn/ui + `AuthContext`) · `npm run build` sem erros.
+- [x] Hooks legados em `src/hooks/` removidos (restam só utilitários globais: `use-mobile`, `use-toast`, `useImageUpload`).
 
 ## Log
 
@@ -50,3 +50,5 @@
 - **2026-06-05** — Feature **auth** migrada. `AuthContext` vira controller usando `auth.service` (wrappers `supabase.auth`); consumidores (App, Header, Hotel/Contacts admin) repontados para `@/features/auth`. `src/contexts/` removido. Build verde (warning pré-existente de react-refresh por exportar provider+hook no mesmo arquivo).
 - **2026-06-05** — Feature **puppies** migrada. Views grandes movidas com `git mv` + edições pontuais (preserva histórico). Service isola Supabase; controller mantém `usePuppies`/`usePuppiesByBreed` (soft delete). `renderPuppyCard(any)` tipado com `Puppy`. `types/puppy.ts` e `hooks/usePuppies.ts` removidos. Build e lint verdes.
 - **2026-06-05** — Feature **dogs** migrada (3 views: DogsPage, DogDetailPage, DogManagementPage) via `git mv` + edições pontuais. Service isola Supabase; controller mantém `useDogs`/`useDogsByBreed` (soft delete). `types/dog.ts` e `hooks/useDogs.ts` removidos. Build e lint verdes.
+- **2026-06-05** — Feature **marketing** migrada (Index/About/Training/Articles → Home/About/Training/Articles em `features/marketing/views`, named exports). `src/pages/` agora só tem `NotFound.tsx`. **Migração concluída.**
+- **2026-06-05** — Limpeza final: corrigidos 3 erros de lint **pré-existentes** (interfaces vazias em `command.tsx`/`textarea.tsx`; `require()` no `tailwind.config.ts`). `npm run lint` passa com 0 erros.

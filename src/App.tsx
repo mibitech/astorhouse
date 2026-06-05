@@ -5,14 +5,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, LoginPage } from "@/features/auth";
-import Index from "./pages/Index";
-import About from "./pages/About";
+import { HomePage, AboutPage, TrainingPage, ArticlesPage } from "@/features/marketing";
 import { ContactPage, ContactManagementPage } from "@/features/contacts";
 import { DogsPage, DogDetailPage, DogManagementPage } from "@/features/dogs";
-import Training from "./pages/Training";
 import { PuppiesPage, PuppyManagementPage } from "@/features/puppies";
 import { HotelPage, HotelManagementPage } from "@/features/hotel";
-import Articles from "./pages/Articles";
 import NotFound from "./pages/NotFound";
 import { FaqPage, FaqManagementPage } from "@/features/faq";
 import { CompanyInfoManagementPage } from "@/features/company";
@@ -28,14 +25,14 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/sobre" element={<About />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/sobre" element={<AboutPage />} />
           <Route path="/caes" element={<DogsPage />} />
           <Route path="/caes/:id" element={<DogDetailPage />} />
-          <Route path="/adestramento" element={<Training />} />
+          <Route path="/adestramento" element={<TrainingPage />} />
           <Route path="/filhotes" element={<PuppiesPage />} />
           <Route path="/hotel" element={<HotelPage />} />
-          <Route path="/artigos" element={<Articles />} />
+          <Route path="/artigos" element={<ArticlesPage />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/contato" element={<ContactPage />} />
           <Route path="/login" element={<LoginPage />} />

@@ -9,7 +9,7 @@ import robsonTrainer from '@/assets/robson.webp';
 import kennelSpace from '@/assets/acomodacao.webp';
 import trainingSpace from '@/assets/moradia.webp';
 
-const Training = () => {
+export const TrainingPage = () => {
   const trainingTypes = [
     {
       title: 'Comandos Básicos',
@@ -239,5 +239,3 @@ const Training = () => {
     </div>
   );
 };
-
-export default Training;

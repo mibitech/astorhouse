@@ -9,7 +9,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import familyWithAussies from '@/assets/family-with-aussies.jpg';
 
-const Index = () => {
+export const HomePage = () => {
   const { data: companyInfo } = useCompanyInfo();
 
   const features = [
@@ -171,5 +171,3 @@ const Index = () => {
     </div>
   );
 };
-
-export default Index;

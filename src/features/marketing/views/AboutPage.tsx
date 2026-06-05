@@ -6,7 +6,7 @@ import { useCompanyInfo } from '@/features/company';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
-const About = () => {
+export const AboutPage = () => {
   const { data: companyInfo } = useCompanyInfo();
 
   const values = [
@@ -171,5 +171,3 @@ const About = () => {
     </div>
   );
 };
-
-export default About;

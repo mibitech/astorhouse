@@ -91,12 +91,12 @@ Regras de domínio observadas no schema:
 
 ## 4. Arquitetura
 
-> **Atual (legado) × alvo.** O diagrama e a estrutura abaixo descrevem o **estado atual**,
-> que é o **legado do Lovable** (`src/pages` + `src/hooks`). A **arquitetura-alvo**, que
-> **prevalece** para todo código novo, é o **MVC feature-based** (`src/features/{feature}` →
-> View → Controller (hook) → Service → Supabase), definido em
-> [.claude/rules/architecture.md](../.claude/rules/architecture.md). A migração do legado é
-> acompanhada via `/migration-audit`.
+> **Arquitetura: MVC feature-based.** O código está organizado em `src/features/{feature}`
+> (View → Controller (hook) → Service → Supabase), conforme
+> [.claude/rules/architecture.md](../.claude/rules/architecture.md). A migração do protótipo
+> Lovable (`src/pages` + `src/hooks`) foi **concluída em 2026-06-05** — ver
+> [migration-checklist.md](migration-checklist.md). O diagrama abaixo é o fluxo lógico; os
+> nomes de arquivos legados citados nas seções seguintes refletem o histórico pré-migração.
 
 ```
 Browser (SPA React)
@@ -174,7 +174,7 @@ Todas as tabelas têm **RLS habilitado**; leitura pública para conteúdo public
 - **Rotas `/admin/*` sem guard client-side**: em [src/App.tsx](src/App.tsx) as páginas de management **não** estão envolvidas por um `ProtectedRoute`/redirect; qualquer um pode abrir a URL. A proteção efetiva depende **inteiramente do RLS** no Supabase. Recomenda-se adicionar guard de rota por sessão/role.
 - **Três lockfiles** (`bun.lock`/`bun.lockb`, `package-lock.json`, `pnpm-lock.yaml`) — risco de divergência de versões; padronizar um gerenciador.
 - **Credenciais duplicadas** (`.env` + hardcoded em `client.ts`) — aceitável por ser chave pública, mas idealmente uma só fonte.
-- **Migração de arquitetura pendente**: o código está no padrão **legado Lovable** (`src/pages` + `src/hooks`); a arquitetura-alvo é **MVC feature-based** (`src/features/*`), definida em [.claude/rules/architecture.md](../.claude/rules/architecture.md). Migrar gradualmente (ver `/migration-audit`). *(A `.claude` já foi adaptada do template Vet1Minuto para o AstorHouse — resolvido.)*
+- ~~**Migração de arquitetura pendente**~~ — **Resolvido (2026-06-05)**: migração para **MVC feature-based** (`src/features/*`) concluída; ver [migration-checklist.md](migration-checklist.md). Baseline pré-migração na tag `prototype-lovable`.
 - **Resquícios de template**: [README-docker.md](README-docker.md) cita "Site Dr. Stanley" e domínio `portal.mibitech.com.br`, herdados de outro projeto.
 - **Logs de debug** (`console.log`) em hooks de produção (ex.: usePuppies).
 - Mistura de **TanStack Query** (provider) com hooks manuais `useState/useEffect` — padrão de fetch não unificado.

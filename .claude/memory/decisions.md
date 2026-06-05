@@ -17,6 +17,11 @@
 - **Contexto**: a pasta `.claude` foi copiada de outro projeto (Vet1Minuto).
 - **Decisão**: manter a arquitetura/processo do template e substituir apenas as **características funcionais**: identidade do produto (AstorHouse), regras de negócio do canil, integrações reais (Supabase + WhatsApp/Léssie) e memória. Removidos arquivos específicos do Vet1Minuto (doses, multi-tenant, Stripe/Brevo) e a permissão de `settings.json` que apontava para `c:/Projetos/vet1minuto`.
 
+### D-004 — Migração Lovable → MVC feature-based concluída
+
+- **Contexto**: protótipo Lovable (`src/pages` + `src/hooks`) migrado para a arquitetura-alvo das rules.
+- **Decisão/Resultado (2026-06-05)**: todas as 8 features movidas para `src/features/*` (auth, marketing, dogs, puppies, hotel, faq, contacts, company) com camadas models/services/controllers/views + barrel. `src/pages/` só tem `NotFound`. Migração behavior-preserving; `npm run build` e `npm run lint` (0 erros) verdes. Baseline na tag `prototype-lovable`; acompanhamento em `docs/migration-checklist.md`.
+
 ### D-003 — Tabela `Leads` é compartilhada com a assistente Léssie
 
 - **Contexto**: o backend Supabase serve o site **e** o bot de WhatsApp Léssie (repo `workspace-lessie-astorhouse`).

@@ -14,20 +14,25 @@ O mesmo banco Supabase é consumido pela assistente de WhatsApp **Léssie** (rep
 `workspace-lessie-astorhouse`), que lê `puppies`/`faq`/`hotel_packages` e grava `Leads`.
 Mudanças de schema aqui podem afetar a Léssie — veja "Cuidados" abaixo.
 
-## Arquitetura: atual (legado) × alvo (MVC) — IMPORTANTE
+## Arquitetura: MVC feature-based (migração concluída)
 
-Este documento descreve o **estado atual** do código, que é o **legado do Lovable**
-(`src/pages` + `src/hooks`). A **arquitetura-alvo**, que **prevalece** para todo código
-novo, é o **MVC feature-based** definido em [.claude/rules/architecture.md](.claude/rules/architecture.md):
+O código segue a arquitetura **MVC feature-based** definida em
+[.claude/rules/architecture.md](.claude/rules/architecture.md):
 
 ```
 View → Controller (hook) → Service → Supabase     em  src/features/{feature}/
 ```
 
-- **Código novo** segue o modelo MVC do `.claude` (não replique o padrão page+hook legado).
-- **Código legado** migra gradualmente para `src/features/*`; acompanhe com `/migration-audit`.
-- A pasta **`.claude/`** (rules, commands, memory) é a **fonte da verdade de processo e
-  arquitetura**. As convenções abaixo refletem o legado **a ser migrado**, não o destino.
+A migração do protótipo Lovable (`src/pages` + `src/hooks`) foi **concluída em 2026-06-05**
+(ver [docs/migration-checklist.md](docs/migration-checklist.md)). Features em `src/features/*`:
+`auth`, `marketing`, `dogs`, `puppies`, `hotel`, `faq`, `contacts`, `company`. Cada uma tem
+`models/` (tipos + zod) · `services/` (Supabase) · `controllers/` (hooks) · `views/` (páginas) · `index.ts` (barrel).
+
+- **Código novo** segue esse modelo MVC; use `/feature <nome>` para o esqueleto.
+- Só restam fora de `features/`: `components/ui` + `components/layout` (shadcn/layout),
+  `integrations/supabase`, hooks utilitários (`use-mobile`, `use-toast`, `useImageUpload`) e `pages/NotFound.tsx`.
+- A pasta **`.claude/`** (rules, commands, memory) é a fonte da verdade de processo e arquitetura.
+- Baseline pré-migração: tag git **`prototype-lovable`**.
 
 ## Stack e comandos
 
@@ -35,25 +40,24 @@ View → Controller (hook) → Service → Supabase     em  src/features/{featur
 - **Pacotes**: há lockfiles de bun, npm **e** pnpm no repo. O modelo-alvo (`.claude`) padroniza **`pnpm`** — ao migrar, consolide nele e remova os lockfiles legados; não gere um quarto. Confirme com o usuário antes de instalar deps.
 - **TypeScript** + ESLint (flat config em [eslint.config.js](eslint.config.js)).
 
-## Estrutura (legado Lovable — alvo é `src/features/*`)
+## Estrutura (MVC feature-based)
 
 | Caminho | Conteúdo |
 |---|---|
-| [src/App.tsx](src/App.tsx) | Rotas (público + `/admin/*`), providers (Query, Auth, Tooltip), bolha WhatsApp. |
-| [src/pages/](src/pages/) | Páginas públicas e `*Management.tsx` (admin CRUD). |
-| [src/hooks/](src/hooks/) | `use*.ts` — acesso a dados por entidade (Supabase). |
-| [src/contexts/AuthContext.tsx](src/contexts/AuthContext.tsx) | Auth (signIn/signUp/signOut, sessão). |
+| [src/App.tsx](src/App.tsx) | Rotas (público + `/admin/*`) importando views de `@/features/*`; providers (Query, Auth, Tooltip); bolha WhatsApp. |
+| [src/features/](src/features/) | Uma pasta por feature: `models/` · `services/` · `controllers/` · `views/` · `index.ts`. |
 | [src/integrations/supabase/](src/integrations/supabase/) | `client.ts` (cliente) e `types.ts` (schema gerado — **não editar à mão**). |
 | [src/components/ui/](src/components/ui/) | Componentes shadcn/ui (Radix). |
-| [src/types/](src/types/) | Tipos de domínio (`puppy.ts`, `dog.ts`). |
+| [src/components/layout/](src/components/layout/) | Header/Footer globais. |
+| [src/hooks/](src/hooks/) | Apenas utilitários globais (`use-mobile`, `use-toast`, `useImageUpload`). |
+| [src/pages/](src/pages/) | Apenas `NotFound.tsx` (catch-all). |
 | [supabase/migrations/](supabase/migrations/) | Migrations SQL (schema + RLS). |
 | Docker | [Dockerfile](Dockerfile), [docker-compose.yml](docker-compose.yml), [nginx.conf](nginx.conf), [README-docker.md](README-docker.md). |
 
 ## Convenções
 
-> Para **código novo**, a referência é [.claude/rules/architecture.md](.claude/rules/architecture.md) (MVC).
-> As convenções abaixo descrevem o **padrão legado** que ainda predomina no repositório —
-> útil para ler/manter o existente, mas não para criar feature nova do zero.
+> A referência de arquitetura é [.claude/rules/architecture.md](.claude/rules/architecture.md) (MVC).
+> As convenções abaixo valem para todo o código em `src/features/*`.
 
 - **Alias de import**: use `@/...` para `src/...` (configurado em [vite.config.ts](vite.config.ts) e tsconfig).
 - **UI**: componha com shadcn/ui já presente em `src/components/ui/`; **não** traga outra lib de componentes. Estilo via Tailwind (`cn()` de [src/lib/utils.ts](src/lib/utils.ts)).
