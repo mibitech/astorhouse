@@ -7,10 +7,10 @@ import { Heart, Award, Dog, Star, Crown, Shield, Calendar, Weight, Ruler, Loader
 import { Link } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { Dog as DogType } from '@/types/dog';
-import { useDogs } from '@/hooks/useDogs';
+import { Dog as DogType } from '../models/dog.types';
+import { useDogs } from '../controllers/useDogs';
 
-const Dogs = () => {
+export const DogsPage = () => {
   const { dogs, loading, error } = useDogs();
 
   if (loading) {
@@ -344,5 +344,3 @@ const Dogs = () => {
     </div>
   );
 };
-
-export default Dogs;

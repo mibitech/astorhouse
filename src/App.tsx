@@ -8,14 +8,12 @@ import { AuthProvider, LoginPage } from "@/features/auth";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import { ContactPage, ContactManagementPage } from "@/features/contacts";
-import Dogs from "./pages/Dogs";
-import DogDetail from "./pages/DogDetail";
+import { DogsPage, DogDetailPage, DogManagementPage } from "@/features/dogs";
 import Training from "./pages/Training";
 import { PuppiesPage, PuppyManagementPage } from "@/features/puppies";
 import { HotelPage, HotelManagementPage } from "@/features/hotel";
 import Articles from "./pages/Articles";
 import NotFound from "./pages/NotFound";
-import DogManagement from "./pages/DogManagement";
 import { FaqPage, FaqManagementPage } from "@/features/faq";
 import { CompanyInfoManagementPage } from "@/features/company";
 import { WhatsAppBubble } from "@/components/ui/whatsapp-bubble";
@@ -32,8 +30,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/sobre" element={<About />} />
-          <Route path="/caes" element={<Dogs />} />
-          <Route path="/caes/:id" element={<DogDetail />} />
+          <Route path="/caes" element={<DogsPage />} />
+          <Route path="/caes/:id" element={<DogDetailPage />} />
           <Route path="/adestramento" element={<Training />} />
           <Route path="/filhotes" element={<PuppiesPage />} />
           <Route path="/hotel" element={<HotelPage />} />
@@ -41,7 +39,7 @@ const App = () => (
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/contato" element={<ContactPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/admin/caes" element={<DogManagement />} />
+          <Route path="/admin/caes" element={<DogManagementPage />} />
           <Route path="/admin/filhotes" element={<PuppyManagementPage />} />
           <Route path="/admin/faq" element={<FaqManagementPage />} />
           <Route path="/admin/hotel" element={<HotelManagementPage />} />

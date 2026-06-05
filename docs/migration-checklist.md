@@ -19,7 +19,7 @@
 | **faq** | `pages/FAQ.tsx`, `pages/FAQManagement.tsx`, `hooks/useFAQ.ts` | `features/faq/` (models/services/controllers/views) | ✅ Migrado |
 | **hotel** | `pages/Hotel.tsx`, `pages/HotelManagement.tsx`, `hooks/useHotelPackages.ts` | `features/hotel/` | ✅ Migrado |
 | **puppies** | `pages/Puppies.tsx`, `pages/PuppyManagement.tsx`, `hooks/usePuppies.ts`, `types/puppy.ts` | `features/puppies/` | ✅ Migrado |
-| dogs | `pages/Dogs.tsx`, `pages/DogDetail.tsx`, `pages/DogManagement.tsx`, `hooks/useDogs.ts`, `types/dog.ts` | `features/dogs/` | ⬜ Pendente |
+| **dogs** | `pages/Dogs.tsx`, `pages/DogDetail.tsx`, `pages/DogManagement.tsx`, `hooks/useDogs.ts`, `types/dog.ts` | `features/dogs/` | ✅ Migrado |
 | **contacts** | `pages/Contact.tsx`, `pages/ContactManagement.tsx`, `hooks/useContacts.ts` | `features/contacts/` | ✅ Migrado |
 | **company** | `pages/CompanyInfoManagement.tsx`, `hooks/useCompanyInfo.ts` | `features/company/` | ✅ Migrado |
 | **auth** | `pages/Login.tsx`, `contexts/AuthContext.tsx` | `features/auth/` | ✅ Migrado |
@@ -49,3 +49,4 @@
 - **2026-06-05** — Feature **contacts** migrada. Formulário público do protótipo (não renderizado / código morto) removido; `ContactPage` vira informativa usando `@/features/company`. Tipado o `any` do badge de status. Build e lint verdes; legado removido.
 - **2026-06-05** — Feature **auth** migrada. `AuthContext` vira controller usando `auth.service` (wrappers `supabase.auth`); consumidores (App, Header, Hotel/Contacts admin) repontados para `@/features/auth`. `src/contexts/` removido. Build verde (warning pré-existente de react-refresh por exportar provider+hook no mesmo arquivo).
 - **2026-06-05** — Feature **puppies** migrada. Views grandes movidas com `git mv` + edições pontuais (preserva histórico). Service isola Supabase; controller mantém `usePuppies`/`usePuppiesByBreed` (soft delete). `renderPuppyCard(any)` tipado com `Puppy`. `types/puppy.ts` e `hooks/usePuppies.ts` removidos. Build e lint verdes.
+- **2026-06-05** — Feature **dogs** migrada (3 views: DogsPage, DogDetailPage, DogManagementPage) via `git mv` + edições pontuais. Service isola Supabase; controller mantém `useDogs`/`useDogsByBreed` (soft delete). `types/dog.ts` e `hooks/useDogs.ts` removidos. Build e lint verdes.

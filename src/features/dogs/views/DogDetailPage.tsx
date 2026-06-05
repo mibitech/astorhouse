@@ -7,7 +7,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { ArrowLeft, Award, Calendar, Dog, Heart, Loader2, Phone, Ruler, Star, Weight } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { useDogs } from '@/hooks/useDogs';
+import { useDogs } from '../controllers/useDogs';
 
 const statusLabels: Record<string, string> = {
   garanhao: 'Garanhão',
@@ -23,7 +23,7 @@ const breedLabels: Record<string, string> = {
   rottweiler: 'Rottweiler',
 };
 
-const DogDetail = () => {
+export const DogDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { dogs, loading } = useDogs();
   const dog = dogs.find(d => d.id === id);
@@ -226,5 +226,3 @@ const DogDetail = () => {
     </div>
   );
 };
-
-export default DogDetail;

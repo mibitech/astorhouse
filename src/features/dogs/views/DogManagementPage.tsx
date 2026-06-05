@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dog, DogFormData } from '@/types/dog';
+import { Dog, DogFormData } from '../models/dog.types';
 import { Plus, Edit, Trash2, Search, Filter, Dog as DogIcon, Loader2, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,7 +18,7 @@ import { z } from 'zod';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { toast } from 'sonner';
-import { useDogs } from '@/hooks/useDogs';
+import { useDogs } from '../controllers/useDogs';
 import ImageUploader from '@/components/ui/image-uploader';
 
 const dogSchema = z.object({
@@ -56,7 +56,7 @@ const dogSchema = z.object({
   notes: z.string().optional(),
 });
 
-const DogManagement = () => {
+export const DogManagementPage = () => {
   const { dogs, loading, error, createDog, updateDog, deleteDog } = useDogs();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingDog, setEditingDog] = useState<Dog | null>(null);
@@ -777,4 +777,3 @@ const DogManagement = () => {
   );
 };
 
-export default DogManagement;
