@@ -6,10 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useCompanyInfo, useUpdateCompanyInfo } from '@/hooks/useCompanyInfo';
 import { Loader2 } from 'lucide-react';
+import { useCompanyInfo, useUpdateCompanyInfo } from '../controllers/useCompanyInfo';
+import type { SocialMedia } from '../models/company.types';
 
-const CompanyInfoManagement = () => {
+export function CompanyInfoManagementPage() {
   const { data: companyInfo, isLoading } = useCompanyInfo();
   const updateCompanyInfo = useUpdateCompanyInfo();
 
@@ -34,10 +35,11 @@ const CompanyInfoManagement = () => {
 
   useEffect(() => {
     if (companyInfo) {
-      const socialMedia = typeof companyInfo.social_media === 'object' && companyInfo.social_media !== null
-        ? companyInfo.social_media as any
-        : { facebook: '', instagram: '', youtube: '', linkedin: '' };
-      
+      const socialMedia =
+        typeof companyInfo.social_media === 'object' && companyInfo.social_media !== null
+          ? (companyInfo.social_media as Partial<SocialMedia>)
+          : { facebook: '', instagram: '', youtube: '', linkedin: '' };
+
       setFormData({
         id: companyInfo.id || '',
         name: companyInfo.name || '',
@@ -61,12 +63,12 @@ const CompanyInfoManagement = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSocialMediaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       social_media: {
         ...prev.social_media,
@@ -102,33 +104,17 @@ const CompanyInfoManagement = () => {
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="name">Nome da Empresa</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                />
+                <Input id="name" name="name" value={formData.name} onChange={handleInputChange} required />
               </div>
 
               <div>
                 <Label htmlFor="slogan">Slogan</Label>
-                <Input
-                  id="slogan"
-                  name="slogan"
-                  value={formData.slogan}
-                  onChange={handleInputChange}
-                />
+                <Input id="slogan" name="slogan" value={formData.slogan} onChange={handleInputChange} />
               </div>
 
               <div>
                 <Label htmlFor="logo_url">URL do Logo</Label>
-                <Input
-                  id="logo_url"
-                  name="logo_url"
-                  value={formData.logo_url}
-                  onChange={handleInputChange}
-                />
+                <Input id="logo_url" name="logo_url" value={formData.logo_url} onChange={handleInputChange} />
               </div>
             </CardContent>
           </Card>
@@ -140,35 +126,17 @@ const CompanyInfoManagement = () => {
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="mission">Missão</Label>
-                <Textarea
-                  id="mission"
-                  name="mission"
-                  value={formData.mission}
-                  onChange={handleInputChange}
-                  rows={4}
-                />
+                <Textarea id="mission" name="mission" value={formData.mission} onChange={handleInputChange} rows={4} />
               </div>
 
               <div>
                 <Label htmlFor="vision">Visão</Label>
-                <Textarea
-                  id="vision"
-                  name="vision"
-                  value={formData.vision}
-                  onChange={handleInputChange}
-                  rows={4}
-                />
+                <Textarea id="vision" name="vision" value={formData.vision} onChange={handleInputChange} rows={4} />
               </div>
 
               <div>
                 <Label htmlFor="values">Valores</Label>
-                <Textarea
-                  id="values"
-                  name="values"
-                  value={formData.values}
-                  onChange={handleInputChange}
-                  rows={4}
-                />
+                <Textarea id="values" name="values" value={formData.values} onChange={handleInputChange} rows={4} />
               </div>
             </CardContent>
           </Card>
@@ -180,34 +148,17 @@ const CompanyInfoManagement = () => {
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="phone">Telefone</Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                />
+                <Input id="phone" name="phone" value={formData.phone} onChange={handleInputChange} />
               </div>
 
               <div>
                 <Label htmlFor="email">E-mail</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                />
+                <Input id="email" name="email" type="email" value={formData.email} onChange={handleInputChange} />
               </div>
 
               <div>
                 <Label htmlFor="address">Endereço</Label>
-                <Textarea
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  rows={3}
-                />
+                <Textarea id="address" name="address" value={formData.address} onChange={handleInputChange} rows={3} />
               </div>
             </CardContent>
           </Card>
@@ -270,6 +221,4 @@ const CompanyInfoManagement = () => {
       <Footer />
     </div>
   );
-};
-
-export default CompanyInfoManagement;
+}

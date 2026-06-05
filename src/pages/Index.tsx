@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Heart, Shield, Award, Users, ArrowRight, Dog, Trophy, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useCompanyInfo } from '@/hooks/useCompanyInfo';
+import { useCompanyInfo } from '@/features/company';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import familyWithAussies from '@/assets/family-with-aussies.jpg';

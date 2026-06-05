@@ -20,7 +20,7 @@ import DogManagement from "./pages/DogManagement";
 import PuppyManagement from "./pages/PuppyManagement";
 import { FaqPage, FaqManagementPage } from "@/features/faq";
 import ContactManagement from "./pages/ContactManagement";
-import CompanyInfoManagement from "./pages/CompanyInfoManagement";
+import { CompanyInfoManagementPage } from "@/features/company";
 import { WhatsAppBubble } from "@/components/ui/whatsapp-bubble";
 
 const queryClient = new QueryClient();
@@ -49,7 +49,7 @@ const App = () => (
           <Route path="/admin/faq" element={<FaqManagementPage />} />
           <Route path="/admin/hotel" element={<HotelManagementPage />} />
           <Route path="/admin/contatos" element={<ContactManagement />} />
-          <Route path="/admin/empresa" element={<CompanyInfoManagement />} />
+          <Route path="/admin/empresa" element={<CompanyInfoManagementPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

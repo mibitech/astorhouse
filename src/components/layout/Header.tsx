@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useCompanyInfo } from '@/hooks/useCompanyInfo';
+import { useCompanyInfo } from '@/features/company';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFaq } from '@/features/faq';
 import logoImage from '@/assets/logo-astor-house-site.png';

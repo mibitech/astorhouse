@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Heart, Shield, Award, Users, Target, Eye } from 'lucide-react';
-import { useCompanyInfo } from '@/hooks/useCompanyInfo';
+import { useCompanyInfo } from '@/features/company';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
