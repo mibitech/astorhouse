@@ -8,7 +8,7 @@ import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { useAuth } from '../controllers/AuthContext';
+import { useAuth } from '../controllers/auth-context';
 
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
