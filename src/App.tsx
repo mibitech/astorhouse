@@ -4,25 +4,15 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
-import Index from "./pages/Index";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Dogs from "./pages/Dogs";
-import DogDetail from "./pages/DogDetail";
-import Training from "./pages/Training";
-import Puppies from "./pages/Puppies";
-import Hotel from "./pages/Hotel";
-import Articles from "./pages/Articles";
-import Login from "./pages/Login";
+import { AuthProvider, LoginPage } from "@/features/auth";
+import { HomePage, AboutPage, TrainingPage, ArticlesPage } from "@/features/marketing";
+import { ContactPage, ContactManagementPage } from "@/features/contacts";
+import { DogsPage, DogDetailPage, DogManagementPage } from "@/features/dogs";
+import { PuppiesPage, PuppyManagementPage } from "@/features/puppies";
+import { HotelPage, HotelManagementPage } from "@/features/hotel";
 import NotFound from "./pages/NotFound";
-import DogManagement from "./pages/DogManagement";
-import PuppyManagement from "./pages/PuppyManagement";
-import FAQManagement from "./pages/FAQManagement";
-import FAQ from "./pages/FAQ";
-import HotelManagement from "./pages/HotelManagement";
-import ContactManagement from "./pages/ContactManagement";
-import CompanyInfoManagement from "./pages/CompanyInfoManagement";
+import { FaqPage, FaqManagementPage } from "@/features/faq";
+import { CompanyInfoManagementPage } from "@/features/company";
 import { WhatsAppBubble } from "@/components/ui/whatsapp-bubble";
 
 const queryClient = new QueryClient();
@@ -35,23 +25,23 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/sobre" element={<About />} />
-          <Route path="/caes" element={<Dogs />} />
-          <Route path="/caes/:id" element={<DogDetail />} />
-          <Route path="/adestramento" element={<Training />} />
-          <Route path="/filhotes" element={<Puppies />} />
-          <Route path="/hotel" element={<Hotel />} />
-          <Route path="/artigos" element={<Articles />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/contato" element={<Contact />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/admin/caes" element={<DogManagement />} />
-          <Route path="/admin/filhotes" element={<PuppyManagement />} />
-          <Route path="/admin/faq" element={<FAQManagement />} />
-          <Route path="/admin/hotel" element={<HotelManagement />} />
-          <Route path="/admin/contatos" element={<ContactManagement />} />
-          <Route path="/admin/empresa" element={<CompanyInfoManagement />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/sobre" element={<AboutPage />} />
+          <Route path="/caes" element={<DogsPage />} />
+          <Route path="/caes/:id" element={<DogDetailPage />} />
+          <Route path="/adestramento" element={<TrainingPage />} />
+          <Route path="/filhotes" element={<PuppiesPage />} />
+          <Route path="/hotel" element={<HotelPage />} />
+          <Route path="/artigos" element={<ArticlesPage />} />
+          <Route path="/faq" element={<FaqPage />} />
+          <Route path="/contato" element={<ContactPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/admin/caes" element={<DogManagementPage />} />
+          <Route path="/admin/filhotes" element={<PuppyManagementPage />} />
+          <Route path="/admin/faq" element={<FaqManagementPage />} />
+          <Route path="/admin/hotel" element={<HotelManagementPage />} />
+          <Route path="/admin/contatos" element={<ContactManagementPage />} />
+          <Route path="/admin/empresa" element={<CompanyInfoManagementPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
