@@ -4,44 +4,37 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { HelpCircle, Search, Filter, Loader2 } from 'lucide-react';
-import { useFAQ } from '@/hooks/useFAQ';
+import { HelpCircle, Search, Loader2 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { useFaq } from '../controllers/useFaq';
+import { publicFaqCategories } from '../models/faq.types';
 
-const categories = [
-  { value: "all", label: "Todas as Categorias" },
-  { value: "filhotes", label: "Filhotes" },
-  { value: "caes", label: "Cães Adultos" },
-  { value: "adestramento", label: "Adestramento" },
-  { value: "hotel", label: "Hotel" },
-  { value: "criacao", label: "Criação" },
-  { value: "saude", label: "Saúde" },
-  { value: "geral", label: "Geral" }
-];
-
-export default function FAQ() {
-  const { faqs, loading } = useFAQ();
+export function FaqPage() {
+  const { faqs, isLoading } = useFaq();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
 
   const getCategoryLabel = (category: string) => {
-    const cat = categories.find(c => c.value === category);
+    const cat = publicFaqCategories.find((c) => c.value === category);
     return cat ? cat.label : category;
   };
 
-  // Filter only published FAQs
-  const publishedFAQs = faqs.filter(faq => faq.is_published);
+  // Apenas FAQs publicadas
+  const publishedFAQs = faqs.filter((faq) => faq.is_published);
 
-  const filteredFAQs = publishedFAQs.filter(faq => {
-    const matchesSearch = faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         faq.answer.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === 'all' || faq.category === filterCategory;
-    
-    return matchesSearch && matchesCategory;
-  }).sort((a, b) => a.order_index - b.order_index);
+  const filteredFAQs = publishedFAQs
+    .filter((faq) => {
+      const matchesSearch =
+        faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        faq.answer.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = filterCategory === 'all' || faq.category === filterCategory;
 
-  if (loading) {
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => a.order_index - b.order_index);
+
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
@@ -59,7 +52,7 @@ export default function FAQ() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
@@ -100,7 +93,7 @@ export default function FAQ() {
                     <SelectValue placeholder="Selecione uma categoria" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories.map((category) => (
+                    {publicFaqCategories.map((category) => (
                       <SelectItem key={category.value} value={category.value}>
                         {category.label}
                       </SelectItem>
@@ -119,8 +112,8 @@ export default function FAQ() {
               <HelpCircle className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
               <h3 className="text-xl font-semibold mb-2">Nenhuma pergunta encontrada</h3>
               <p className="text-muted-foreground">
-                {searchTerm || filterCategory !== 'all' 
-                  ? 'Tente ajustar os filtros ou termo de busca.' 
+                {searchTerm || filterCategory !== 'all'
+                  ? 'Tente ajustar os filtros ou termo de busca.'
                   : 'Ainda não há perguntas frequentes publicadas.'}
               </p>
             </CardContent>
@@ -156,8 +149,8 @@ export default function FAQ() {
                             {faq.answer}
                           </p>
                         </div>
-                        
-                        {/* Show source if available */}
+
+                        {/* Fonte, quando disponível */}
                         {faq.source && (
                           <div className="mt-4 pt-4 border-t border-border/50">
                             <p className="text-sm text-muted-foreground">

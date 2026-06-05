@@ -18,8 +18,7 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import DogManagement from "./pages/DogManagement";
 import PuppyManagement from "./pages/PuppyManagement";
-import FAQManagement from "./pages/FAQManagement";
-import FAQ from "./pages/FAQ";
+import { FaqPage, FaqManagementPage } from "@/features/faq";
 import HotelManagement from "./pages/HotelManagement";
 import ContactManagement from "./pages/ContactManagement";
 import CompanyInfoManagement from "./pages/CompanyInfoManagement";
@@ -43,12 +42,12 @@ const App = () => (
           <Route path="/filhotes" element={<Puppies />} />
           <Route path="/hotel" element={<Hotel />} />
           <Route path="/artigos" element={<Articles />} />
-          <Route path="/faq" element={<FAQ />} />
+          <Route path="/faq" element={<FaqPage />} />
           <Route path="/contato" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin/caes" element={<DogManagement />} />
           <Route path="/admin/filhotes" element={<PuppyManagement />} />
-          <Route path="/admin/faq" element={<FAQManagement />} />
+          <Route path="/admin/faq" element={<FaqManagementPage />} />
           <Route path="/admin/hotel" element={<HotelManagement />} />
           <Route path="/admin/contatos" element={<ContactManagement />} />
           <Route path="/admin/empresa" element={<CompanyInfoManagement />} />

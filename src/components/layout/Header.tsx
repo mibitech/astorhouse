@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useCompanyInfo } from '@/hooks/useCompanyInfo';
 import { useAuth } from '@/contexts/AuthContext';
-import { useFAQ } from '@/hooks/useFAQ';
+import { useFaq } from '@/features/faq';
 import logoImage from '@/assets/logo-astor-house-site.png';
 
 const Header = () => {
@@ -20,7 +20,7 @@ const Header = () => {
   const [draftCount, setDraftCount] = useState(0);
   const { data: companyInfo } = useCompanyInfo();
   const { user, signOut } = useAuth();
-  const { getDraftCount } = useFAQ();
+  const { getDraftCount } = useFaq();
   const navigate = useNavigate();
 
   const navigationItems = [
