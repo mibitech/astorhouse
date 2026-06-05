@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useCompanyInfo } from '@/features/company';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/features/auth';
 import { useFaq } from '@/features/faq';
 import logoImage from '@/assets/logo-astor-house-site.png';
 

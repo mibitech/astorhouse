@@ -27,12 +27,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ArrowLeft, Eye, Trash2, Mail, Phone, Calendar } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useContacts, useUpdateContactStatus, useDeleteContact, Contact } from '@/hooks/useContacts';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { useAuth } from '@/features/auth';
+import { useContacts, useUpdateContactStatus, useDeleteContact } from '../controllers/useContacts';
+import { contactTypeLabels, contactStatusConfig, type Contact } from '../models/contact.types';
 
-const ContactManagement = () => {
+export function ContactManagementPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: contacts, isLoading } = useContacts();
@@ -48,26 +49,11 @@ const ContactManagement = () => {
   }
 
   const getStatusBadge = (status: string) => {
-    const variants: Record<string, { variant: any; label: string }> = {
-      new: { variant: 'default', label: 'Novo' },
-      in_progress: { variant: 'secondary', label: 'Em Andamento' },
-      resolved: { variant: 'outline', label: 'Resolvido' },
-    };
-    
-    const config = variants[status] || variants.new;
+    const config = contactStatusConfig[status] || contactStatusConfig.new;
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
-  const getContactTypeName = (type: string) => {
-    const types: Record<string, string> = {
-      general: 'Informações Gerais',
-      adoption: 'Adoção de Filhotes',
-      training: 'Adestramento',
-      breeding: 'Reprodução',
-      consultation: 'Consultoria',
-    };
-    return types[type] || type;
-  };
+  const getContactTypeName = (type: string) => contactTypeLabels[type] || type;
 
   const handleViewDetails = (contact: Contact) => {
     setSelectedContact(contact);
@@ -137,9 +123,7 @@ const ContactManagement = () => {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline">
-                            {getContactTypeName(contact.contact_type)}
-                          </Badge>
+                          <Badge variant="outline">{getContactTypeName(contact.contact_type)}</Badge>
                         </TableCell>
                         <TableCell>
                           <Select
@@ -166,18 +150,10 @@ const ContactManagement = () => {
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleViewDetails(contact)}
-                            >
+                            <Button variant="ghost" size="icon" onClick={() => handleViewDetails(contact)}>
                               <Eye className="h-4 w-4" />
                             </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDelete(contact.id)}
-                            >
+                            <Button variant="ghost" size="icon" onClick={() => handleDelete(contact.id)}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
@@ -203,43 +179,41 @@ const ContactManagement = () => {
                 <h3 className="font-semibold text-sm text-muted-foreground mb-1">Nome</h3>
                 <p>{selectedContact.name}</p>
               </div>
-              
+
               <div>
                 <h3 className="font-semibold text-sm text-muted-foreground mb-1">E-mail</h3>
                 <p>{selectedContact.email}</p>
               </div>
-              
+
               {selectedContact.phone && (
                 <div>
                   <h3 className="font-semibold text-sm text-muted-foreground mb-1">Telefone</h3>
                   <p>{selectedContact.phone}</p>
                 </div>
               )}
-              
+
               <div>
                 <h3 className="font-semibold text-sm text-muted-foreground mb-1">Tipo de Contato</h3>
                 <p>{getContactTypeName(selectedContact.contact_type)}</p>
               </div>
-              
+
               {selectedContact.subject && (
                 <div>
                   <h3 className="font-semibold text-sm text-muted-foreground mb-1">Assunto</h3>
                   <p>{selectedContact.subject}</p>
                 </div>
               )}
-              
+
               <div>
                 <h3 className="font-semibold text-sm text-muted-foreground mb-1">Mensagem</h3>
-                <p className="whitespace-pre-wrap bg-muted/50 p-4 rounded-md">
-                  {selectedContact.message}
-                </p>
+                <p className="whitespace-pre-wrap bg-muted/50 p-4 rounded-md">{selectedContact.message}</p>
               </div>
-              
+
               <div>
                 <h3 className="font-semibold text-sm text-muted-foreground mb-1">Status</h3>
                 {getStatusBadge(selectedContact.status)}
               </div>
-              
+
               <div>
                 <h3 className="font-semibold text-sm text-muted-foreground mb-1">Data de Recebimento</h3>
                 <p>
@@ -256,6 +230,4 @@ const ContactManagement = () => {
       <Footer />
     </div>
   );
-};
-
-export default ContactManagement;
+}

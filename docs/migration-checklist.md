@@ -20,9 +20,9 @@
 | **hotel** | `pages/Hotel.tsx`, `pages/HotelManagement.tsx`, `hooks/useHotelPackages.ts` | `features/hotel/` | ✅ Migrado |
 | puppies | `pages/Puppies.tsx`, `pages/PuppyManagement.tsx`, `hooks/usePuppies.ts`, `types/puppy.ts` | `features/puppies/` | ⬜ Pendente |
 | dogs | `pages/Dogs.tsx`, `pages/DogDetail.tsx`, `pages/DogManagement.tsx`, `hooks/useDogs.ts`, `types/dog.ts` | `features/dogs/` | ⬜ Pendente |
-| contacts | `pages/Contact.tsx`, `pages/ContactManagement.tsx`, `hooks/useContacts.ts` | `features/contacts/` | ⬜ Pendente |
+| **contacts** | `pages/Contact.tsx`, `pages/ContactManagement.tsx`, `hooks/useContacts.ts` | `features/contacts/` | ✅ Migrado |
 | **company** | `pages/CompanyInfoManagement.tsx`, `hooks/useCompanyInfo.ts` | `features/company/` | ✅ Migrado |
-| auth | `pages/Login.tsx`, `contexts/AuthContext.tsx` | `features/auth/` | ⬜ Pendente |
+| **auth** | `pages/Login.tsx`, `contexts/AuthContext.tsx` | `features/auth/` | ✅ Migrado |
 | home/marketing | `pages/Index.tsx`, `pages/About.tsx`, `pages/Training.tsx`, `pages/Articles.tsx` | `features/marketing/` (a definir) | ⬜ Pendente |
 | _NotFound_ | `pages/NotFound.tsx` | mantém em `pages/` (catch-all) | ➖ Mantém |
 
@@ -46,3 +46,5 @@
 - **2026-06-05** — Feature **faq** migrada (primeira fatia/referência de padrão). Build e lint verdes. `App.tsx` e `Header.tsx` repontados; legado removido.
 - **2026-06-05** — Feature **hotel** migrada (controller mantém TanStack Query; services isolam o Supabase). Build e lint verdes. `App.tsx` repontado; legado removido.
 - **2026-06-05** — Feature **company** migrada. Consumidores (Header, Footer, Index, About, Contact) repontados para `@/features/company`; tipados os `any` de `social_media` no Footer com `SocialMedia`. Build e lint verdes; legado removido.
+- **2026-06-05** — Feature **contacts** migrada. Formulário público do protótipo (não renderizado / código morto) removido; `ContactPage` vira informativa usando `@/features/company`. Tipado o `any` do badge de status. Build e lint verdes; legado removido.
+- **2026-06-05** — Feature **auth** migrada. `AuthContext` vira controller usando `auth.service` (wrappers `supabase.auth`); consumidores (App, Header, Hotel/Contacts admin) repontados para `@/features/auth`. `src/contexts/` removido. Build verde (warning pré-existente de react-refresh por exportar provider+hook no mesmo arquivo).
