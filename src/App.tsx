@@ -5,7 +5,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, LoginPage, ProtectedRoute } from "@/features/auth";
-import { HomePage, AboutPage, TrainingPage, ArticlesPage } from "@/features/marketing";
+import { HomePage, AboutPage, TrainingPage } from "@/features/marketing";
+import { ArticlesPage, ArticleManagementPage } from "@/features/articles";
 import { ContactPage, ContactManagementPage } from "@/features/contacts";
 import { DogsPage, DogDetailPage, DogManagementPage } from "@/features/dogs";
 import { PuppiesPage, PuppyManagementPage } from "@/features/puppies";
@@ -42,6 +43,7 @@ const App = () => (
           <Route path="/admin/hotel" element={<ProtectedRoute><HotelManagementPage /></ProtectedRoute>} />
           <Route path="/admin/contatos" element={<ProtectedRoute><ContactManagementPage /></ProtectedRoute>} />
           <Route path="/admin/empresa" element={<ProtectedRoute><CompanyInfoManagementPage /></ProtectedRoute>} />
+          <Route path="/admin/artigos" element={<ProtectedRoute><ArticleManagementPage /></ProtectedRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
