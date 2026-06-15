@@ -28,9 +28,6 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const handleFileUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
 
-    console.log('Fazendo upload de imagens:', files.length);
-    console.log('Imagens atuais antes do upload:', currentImages);
-
     const remainingSlots = maxImages - currentImages.length;
     const filesToUpload = Array.from(files).slice(0, remainingSlots);
 
@@ -38,22 +35,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     const uploadedUrls = await Promise.all(uploadPromises);
     
     const newImages = uploadedUrls.filter(url => url !== null) as string[];
-    const finalImages = [...currentImages, ...newImages];
-    
-    console.log('URLs das imagens uploadadas:', newImages);
-    console.log('Lista final de imagens:', finalImages);
-    
-    onImagesChange(finalImages);
+    onImagesChange([...currentImages, ...newImages]);
   };
 
   const handleRemoveImage = async (imageUrl: string) => {
-    console.log('Removendo imagem:', imageUrl);
-    console.log('Imagens atuais:', currentImages);
-    
-    // Always remove from local list first
-    const newImages = currentImages.filter(url => url !== imageUrl);
-    console.log('Novas imagens após remoção:', newImages);
-    onImagesChange(newImages);
+    onImagesChange(currentImages.filter(url => url !== imageUrl));
     
     // Try to delete from storage only if it's a Supabase Storage URL
     if (imageUrl.includes('storage/v1/object/public/')) {

@@ -118,22 +118,15 @@ export const PuppyManagementPage = () => {
   }, [form]);
 
   const onSubmit = async (data: PuppyFormData) => {
-    console.log('onSubmit chamado com dados:', data);
-    console.log('Editando filhote:', editingPuppy);
-    
     if (editingPuppy) {
-      console.log('Atualizando filhote ID:', editingPuppy.id);
       const result = await updatePuppy(editingPuppy.id, data);
-      console.log('Resultado da atualização:', result);
       if (result) {
         setIsDialogOpen(false);
         setEditingPuppy(null);
         form.reset();
       }
     } else {
-      console.log('Criando novo filhote');
       const result = await createPuppy(data);
-      console.log('Resultado da criação:', result);
       if (result) {
         setIsDialogOpen(false);
         setEditingPuppy(null);
@@ -317,13 +310,8 @@ export const PuppyManagementPage = () => {
                       </DialogHeader>
                       
                       <Form {...form}>
-                        <form 
-                          onSubmit={(e) => {
-                            console.log('Form submit event triggered');
-                            console.log('Form errors:', form.formState.errors);
-                            console.log('Form values:', form.getValues());
-                            return form.handleSubmit(onSubmit)(e);
-                          }} 
+                        <form
+                          onSubmit={form.handleSubmit(onSubmit)}
                           className="space-y-6"
                         >
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -726,12 +714,7 @@ export const PuppyManagementPage = () => {
                             >
                               Cancelar
                             </Button>
-                            <Button 
-                              type="submit"
-                              onClick={(e) => {
-                                console.log('Botão atualizar clicado!', e);
-                              }}
-                            >
+                            <Button type="submit">
                               {editingPuppy ? 'Atualizar' : 'Cadastrar'}
                             </Button>
                           </div>

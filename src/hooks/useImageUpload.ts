@@ -57,19 +57,14 @@ export const useImageUpload = (): UseImageUploadReturn => {
     path: string
   ): Promise<boolean> => {
     try {
-      console.log('Tentando deletar imagem:', path);
-      
-      // Extract path from URL if necessary
       let filePath = path;
-      
+
       if (path.includes('storage/v1/object/public/')) {
         const parts = path.split(`${bucket}/`);
         if (parts.length > 1) {
           filePath = parts[1];
         }
       }
-      
-      console.log('Caminho do arquivo para deletar:', filePath);
 
       const { error } = await supabase.storage
         .from(bucket)
