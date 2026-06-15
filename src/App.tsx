@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, LoginPage, ProtectedRoute } from "@/features/auth";
 import { HomePage, AboutPage, TrainingPage } from "@/features/marketing";
 import { ArticlesPage, ArticleManagementPage } from "@/features/articles";
+import { TeamManagementPage } from "@/features/team";
 import { ContactPage, ContactManagementPage } from "@/features/contacts";
 import { DogsPage, DogDetailPage, DogManagementPage } from "@/features/dogs";
 import { PuppiesPage, PuppyManagementPage } from "@/features/puppies";
@@ -44,6 +45,7 @@ const App = () => (
           <Route path="/admin/contatos" element={<ProtectedRoute><ContactManagementPage /></ProtectedRoute>} />
           <Route path="/admin/empresa" element={<ProtectedRoute><CompanyInfoManagementPage /></ProtectedRoute>} />
           <Route path="/admin/artigos" element={<ProtectedRoute><ArticleManagementPage /></ProtectedRoute>} />
+          <Route path="/admin/equipe" element={<ProtectedRoute><TeamManagementPage /></ProtectedRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
