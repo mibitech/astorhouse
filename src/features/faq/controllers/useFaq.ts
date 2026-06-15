@@ -1,80 +1,62 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import * as faqService from '../services/faq.service';
 import type { FAQ, FAQFormData } from '../models/faq.types';
 
-// Controller: orquestra estado + service, expõe dados e handlers à View. Sem JSX.
+const FAQS_KEY = ['faqs'];
+
 export function useFaq() {
-  const [faqs, setFaqs] = useState<FAQ[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const fetchFaqs = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const data = await faqService.getFaqs();
-      setFaqs(data);
-      setError(null);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erro ao carregar FAQs';
-      setError(message);
-      console.error('Error fetching FAQs:', message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const { data: faqs = [], isLoading, error: queryError } = useQuery({
+    queryKey: FAQS_KEY,
+    queryFn: faqService.getFaqs,
+  });
 
-  const createFaq = useCallback(
-    async (input: FAQFormData) => {
-      try {
-        const created = await faqService.createFaq(input);
-        setFaqs((prev) => [...prev, created]);
-        toast({ title: 'Sucesso', description: 'FAQ criado com sucesso!' });
-        return created;
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Erro desconhecido';
-        toast({ variant: 'destructive', title: 'Erro ao criar FAQ', description: message });
-        throw err;
-      }
+  const error = queryError instanceof Error ? queryError.message : null;
+
+  const createMutation = useMutation({
+    mutationFn: (input: FAQFormData) => faqService.createFaq(input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: FAQS_KEY });
+      toast({ title: 'Sucesso', description: 'FAQ criado com sucesso!' });
     },
-    [toast],
-  );
+    onError: (err: Error) =>
+      toast({ variant: 'destructive', title: 'Erro ao criar FAQ', description: err.message }),
+  });
 
-  const updateFaq = useCallback(
-    async (id: string, input: Partial<FAQFormData>) => {
-      try {
-        const updated = await faqService.updateFaq(id, input);
-        setFaqs((prev) => prev.map((faq) => (faq.id === id ? updated : faq)));
-        toast({ title: 'Sucesso', description: 'FAQ atualizado com sucesso!' });
-        return updated;
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Erro desconhecido';
-        toast({ variant: 'destructive', title: 'Erro ao atualizar FAQ', description: message });
-        throw err;
-      }
+  const updateMutation = useMutation({
+    mutationFn: ({ id, ...input }: { id: string } & Partial<FAQFormData>) =>
+      faqService.updateFaq(id, input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: FAQS_KEY });
+      toast({ title: 'Sucesso', description: 'FAQ atualizado com sucesso!' });
     },
-    [toast],
-  );
+    onError: (err: Error) =>
+      toast({ variant: 'destructive', title: 'Erro ao atualizar FAQ', description: err.message }),
+  });
 
-  const deleteFaq = useCallback(
-    async (id: string) => {
-      try {
-        await faqService.deleteFaq(id);
-        setFaqs((prev) => prev.filter((faq) => faq.id !== id));
-        toast({ title: 'Sucesso', description: 'FAQ excluído com sucesso!' });
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Erro desconhecido';
-        toast({ variant: 'destructive', title: 'Erro ao excluir FAQ', description: message });
-        throw err;
-      }
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => faqService.deleteFaq(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: FAQS_KEY });
+      toast({ title: 'Sucesso', description: 'FAQ excluído com sucesso!' });
     },
-    [toast],
-  );
+    onError: (err: Error) =>
+      toast({ variant: 'destructive', title: 'Erro ao excluir FAQ', description: err.message }),
+  });
 
-  useEffect(() => {
-    fetchFaqs();
-  }, [fetchFaqs]);
+  const createFaq = (input: FAQFormData): Promise<FAQ> =>
+    createMutation.mutateAsync(input);
+
+  const updateFaq = (id: string, input: Partial<FAQFormData>): Promise<FAQ> =>
+    updateMutation.mutateAsync({ id, ...input });
+
+  const deleteFaq = (id: string): Promise<void> =>
+    deleteMutation.mutateAsync(id);
+
+  const refetch = () => queryClient.invalidateQueries({ queryKey: FAQS_KEY });
 
   return {
     faqs,
@@ -83,7 +65,7 @@ export function useFaq() {
     createFaq,
     updateFaq,
     deleteFaq,
-    refetch: fetchFaqs,
+    refetch,
     getDraftCount: faqService.getDraftCount,
   };
 }

@@ -52,9 +52,6 @@ export async function getDraftCount(): Promise<number> {
     .select('*', { count: 'exact', head: true })
     .eq('is_published', false);
 
-  if (error) {
-    console.error('Error fetching draft count:', error.message);
-    return 0;
-  }
+  if (error) return 0;
   return count ?? 0;
 }

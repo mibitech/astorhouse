@@ -88,8 +88,8 @@ export function FaqManagementPage() {
       }
       setDialogOpen(false);
       form.reset();
-    } catch (error) {
-      console.error('Error saving FAQ:', error);
+    } catch {
+      // erro tratado pelo controller (toast)
     }
   };
 

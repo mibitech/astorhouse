@@ -1,80 +1,80 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import * as puppyService from '../services/puppy.service';
 import type { Puppy, PuppyFormData } from '../models/puppy.types';
 
+const PUPPIES_KEY = ['puppies'];
+
 export const usePuppies = () => {
-  const [puppies, setPuppies] = useState<Puppy[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchPuppies = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await puppyService.getActivePuppies();
-      setPuppies(data);
-      setError(null);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erro ao carregar filhotes';
-      setError(message);
-      toast.error('Erro ao carregar filhotes');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const { data: puppies = [], isLoading: loading, error: queryError } = useQuery({
+    queryKey: PUPPIES_KEY,
+    queryFn: puppyService.getActivePuppies,
+  });
 
-  const createPuppy = useCallback(async (puppy: PuppyFormData): Promise<Puppy | null> => {
-    try {
-      const created = await puppyService.createPuppy(puppy);
-      setPuppies((prev) => [created, ...prev]);
+  const error = queryError instanceof Error ? queryError.message : null;
+
+  const createMutation = useMutation({
+    mutationFn: (puppy: PuppyFormData) => puppyService.createPuppy(puppy),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: PUPPIES_KEY });
       toast.success('Filhote criado com sucesso!');
-      return created;
+    },
+    onError: () => toast.error('Erro ao criar filhote'),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, ...updates }: { id: string } & Partial<Puppy>) =>
+      puppyService.updatePuppy(id, updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: PUPPIES_KEY });
+      toast.success('Filhote atualizado com sucesso!');
+    },
+    onError: (err: Error) => toast.error('Erro ao atualizar filhote: ' + err.message),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => puppyService.deactivatePuppy(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: PUPPIES_KEY });
+      toast.success('Filhote excluído com sucesso!');
+    },
+    onError: () => toast.error('Erro ao excluir filhote'),
+  });
+
+  const createPuppy = async (puppy: PuppyFormData): Promise<Puppy | null> => {
+    try {
+      return await createMutation.mutateAsync(puppy);
     } catch {
-      toast.error('Erro ao criar filhote');
       return null;
     }
-  }, []);
+  };
 
-  const updatePuppy = useCallback(
-    async (id: string, updates: Partial<Puppy>): Promise<Puppy | null> => {
-      try {
-        const updated = await puppyService.updatePuppy(id, updates);
-        if (!updated) {
-          toast.error('Filhote não encontrado ou sem permissão para atualizar');
-          return null;
-        }
-        setPuppies((prev) => prev.map((puppy) => (puppy.id === id ? updated : puppy)));
-        toast.success('Filhote atualizado com sucesso!');
-        return updated;
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'erro inesperado';
-        toast.error('Erro ao atualizar filhote: ' + message);
-        return null;
+  const updatePuppy = async (id: string, updates: Partial<Puppy>): Promise<Puppy | null> => {
+    try {
+      const result = await updateMutation.mutateAsync({ id, ...updates });
+      if (!result) {
+        toast.error('Filhote não encontrado ou sem permissão para atualizar');
       }
-    },
-    [],
-  );
+      return result;
+    } catch {
+      return null;
+    }
+  };
 
-  const deletePuppy = useCallback(
-    async (id: string): Promise<boolean> => {
-      try {
-        await puppyService.deactivatePuppy(id);
-        await fetchPuppies(); // refetch garante consistência
-        toast.success('Filhote excluído com sucesso!');
-        return true;
-      } catch {
-        toast.error('Erro ao excluir filhote');
-        return false;
-      }
-    },
-    [fetchPuppies],
-  );
+  const deletePuppy = async (id: string): Promise<boolean> => {
+    try {
+      await deleteMutation.mutateAsync(id);
+      return true;
+    } catch {
+      return false;
+    }
+  };
 
-  useEffect(() => {
-    fetchPuppies();
-  }, [fetchPuppies]);
+  const refetch = () => queryClient.invalidateQueries({ queryKey: PUPPIES_KEY });
 
-  return { puppies, loading, error, createPuppy, updatePuppy, deletePuppy, refetch: fetchPuppies };
+  return { puppies, loading, error, createPuppy, updatePuppy, deletePuppy, refetch };
 };
 
 export const usePuppiesByBreed = (breed?: string) => {
