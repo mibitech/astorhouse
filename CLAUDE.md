@@ -36,7 +36,7 @@ A migração do protótipo Lovable (`src/pages` + `src/hooks`) foi **concluída 
 
 ## Stack e comandos
 
-- **Dev (estado atual)**: `npm run dev` (Vite, porta **8080**). Build: `npm run build`. Lint: `npm run lint`. Preview: `npm run preview`.
+- **Dev**: `npm run dev` (Vite, porta **3000** — `strictPort`). Build: `npm run build`. Lint: `npm run lint`. Preview: `npm run preview`.
 - **Pacotes**: há lockfiles de bun, npm **e** pnpm no repo. O modelo-alvo (`.claude`) padroniza **`pnpm`** — ao migrar, consolide nele e remova os lockfiles legados; não gere um quarto. Confirme com o usuário antes de instalar deps.
 - **TypeScript** + ESLint (flat config em [eslint.config.js](eslint.config.js)).
 

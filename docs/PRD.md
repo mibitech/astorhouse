@@ -122,7 +122,7 @@ Supabase (projeto iikontpccomtgytcmwnn)
 - **Gerenciador de pacotes**: há lockfiles de `bun`, `npm` e `pnpm` no repo (ver §8 Riscos).
 
 ### Configuração
-- `@` → `./src` (alias em [vite.config.ts](vite.config.ts)); dev server porta **8080**.
+- `@` → `./src` (alias em [vite.config.ts](vite.config.ts)); dev server porta **3000** (`strictPort`).
 - Credenciais Supabase em `.env` (`VITE_SUPABASE_*`) **e** hardcoded em [client.ts](src/integrations/supabase/client.ts) (chave `anon`/publishable — pública por design, protegida por RLS).
 
 ### Deploy
