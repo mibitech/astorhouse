@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider, LoginPage } from "@/features/auth";
+import { AuthProvider, LoginPage, ProtectedRoute } from "@/features/auth";
 import { HomePage, AboutPage, TrainingPage, ArticlesPage } from "@/features/marketing";
 import { ContactPage, ContactManagementPage } from "@/features/contacts";
 import { DogsPage, DogDetailPage, DogManagementPage } from "@/features/dogs";
@@ -36,12 +36,12 @@ const App = () => (
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/contato" element={<ContactPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/admin/caes" element={<DogManagementPage />} />
-          <Route path="/admin/filhotes" element={<PuppyManagementPage />} />
-          <Route path="/admin/faq" element={<FaqManagementPage />} />
-          <Route path="/admin/hotel" element={<HotelManagementPage />} />
-          <Route path="/admin/contatos" element={<ContactManagementPage />} />
-          <Route path="/admin/empresa" element={<CompanyInfoManagementPage />} />
+          <Route path="/admin/caes" element={<ProtectedRoute><DogManagementPage /></ProtectedRoute>} />
+          <Route path="/admin/filhotes" element={<ProtectedRoute><PuppyManagementPage /></ProtectedRoute>} />
+          <Route path="/admin/faq" element={<ProtectedRoute><FaqManagementPage /></ProtectedRoute>} />
+          <Route path="/admin/hotel" element={<ProtectedRoute><HotelManagementPage /></ProtectedRoute>} />
+          <Route path="/admin/contatos" element={<ProtectedRoute><ContactManagementPage /></ProtectedRoute>} />
+          <Route path="/admin/empresa" element={<ProtectedRoute><CompanyInfoManagementPage /></ProtectedRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
