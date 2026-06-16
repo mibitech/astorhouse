@@ -1,6 +1,6 @@
-# Docker Setup - Site Dr. Stanley
+# Docker Setup - Canil AstorHouse
 
-Este projeto foi configurado para executar em container Docker com Nginx e proxy reverso Traefik.
+Este projeto está configurado para executar em container Docker com Nginx e proxy reverso Traefik.
 
 ## Estrutura
 
@@ -24,7 +24,7 @@ Este projeto foi configurado para executar em container Docker com Nginx e proxy
 
 ### docker-compose.yml
 - Serviço `frontend` com labels Traefik
-- Configurado para domínio `portal.mibitech.com.br`
+- Configurado para domínio `www.astorhouse.com.br`
 - SSL/TLS com Let's Encrypt
 - Rede externa `rede_mibi`
 
@@ -36,17 +36,17 @@ Este projeto foi configurado para executar em container Docker com Nginx e proxy
 docker-compose up -d --build
 
 # Ou separadamente:
-# docker build -t site:latest .
+# docker build -t astorhouse:latest .
 # docker-compose up -d
 ```
 
-### 3. Verificar Status
+### 2. Verificar Status
 ```bash
 docker-compose ps
-docker logs site
+docker logs astorhouse
 ```
 
-### 4. Parar o Container
+### 3. Parar o Container
 ```bash
 docker-compose down
 ```
@@ -56,15 +56,15 @@ docker-compose down
 - Docker e Docker Compose instalados na VPS
 - Rede externa `rede_mibi` criada
 - Traefik configurado na mesma rede
-- DNS apontando `portal.mibitech.com.br` para o servidor
-- Arquivos do projeto copiados para a VPS (incluindo .env)
+- DNS apontando `www.astorhouse.com.br` para o servidor
+- Arquivos `.env` copiados para a VPS (nunca comitar)
 
 ## Setup na VPS
 
 ### 1. Copiar arquivos para VPS
 ```bash
-# Fazer upload dos arquivos via scp, rsync ou git clone
-scp -r projeto/ usuario@vps:/caminho/destino/
+# Via rsync (recomendado — exclui node_modules e .git)
+rsync -avz --exclude node_modules --exclude .git . usuario@vps:/caminho/destino/
 
 # Ou via git
 git clone <repositorio> /caminho/destino/
@@ -78,20 +78,20 @@ docker network create rede_mibi
 ## Logs e Debug
 ```bash
 # Logs do container
-docker logs site -f
+docker logs astorhouse -f
 
 # Acessar container
-docker exec -it site sh
+docker exec -it astorhouse sh
 
 # Verificar arquivos servidos
-docker exec -it site ls -la /usr/share/nginx/html
+docker exec -it astorhouse ls -la /usr/share/nginx/html
 ```
 
 ## Variáveis de Ambiente
 
-As variáveis do `.env` são incluídas no build do Vite automaticamente. Não é necessário configuração adicional para produção/desenvolvimento neste setup.
+As variáveis do `.env` são lidas pelo Vite no build. Copie o arquivo `.env` para a VPS antes de rodar `docker-compose up --build`.
 
 ## Acesso
 
-- **Produção**: https://portal.mibitech.com.br (via Traefik)
-- **Local**: http://localhost (se executar nginx diretamente)
+- **Produção**: https://www.astorhouse.com.br (via Traefik + Let's Encrypt)
+- **Local**: http://localhost (se rodar o Nginx diretamente)
