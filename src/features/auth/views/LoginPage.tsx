@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail, User, AlertCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -13,6 +13,7 @@ import { useAuth } from '../controllers/auth-context';
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [signupError, setSignupError] = useState('');
   const [loginForm, setLoginForm] = useState({
     email: '',
     password: '',
@@ -49,14 +50,15 @@ export function LoginPage() {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSignupError('');
 
     if (signupForm.password !== signupForm.confirmPassword) {
-      alert('As senhas não coincidem');
+      setSignupError('As senhas não coincidem.');
       return;
     }
 
     if (signupForm.password.length < 6) {
-      alert('A senha deve ter pelo menos 6 caracteres');
+      setSignupError('A senha deve ter pelo menos 6 caracteres.');
       return;
     }
 
@@ -138,6 +140,7 @@ export function LoginPage() {
                         />
                         <button
                           type="button"
+                          aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
                           className="absolute right-3 top-3"
                           onClick={() => setShowPassword(!showPassword)}
                         >
@@ -217,6 +220,7 @@ export function LoginPage() {
                         />
                         <button
                           type="button"
+                          aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
                           className="absolute right-3 top-3"
                           onClick={() => setShowPassword(!showPassword)}
                         >
@@ -260,6 +264,13 @@ export function LoginPage() {
                         </Link>
                       </Label>
                     </div>
+
+                    {signupError && (
+                      <div className="flex items-center gap-2 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                        <AlertCircle className="h-4 w-4 shrink-0" />
+                        {signupError}
+                      </div>
+                    )}
 
                     <Button type="submit" className="w-full" disabled={isLoading}>
                       {isLoading ? 'Criando conta...' : 'Criar Conta'}

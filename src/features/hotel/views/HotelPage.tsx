@@ -106,7 +106,7 @@ export function HotelPage() {
               <div className="flex flex-wrap justify-center gap-4">
                 <Badge variant="outline" className="bg-white/10 border-white/20 text-white flex items-center gap-2">
                   <Clock className="h-4 w-4" />
-                  Seguraça 24h
+                  Segurança 24h
                 </Badge>
                 <Badge variant="outline" className="bg-white/10 border-white/20 text-white flex items-center gap-2">
                   <Star className="h-4 w-4" />5 Estrelas

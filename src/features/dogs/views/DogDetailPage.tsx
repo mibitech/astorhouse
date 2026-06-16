@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { ArrowLeft, Award, Calendar, Dog, Heart, Loader2, Phone, Ruler, Star, Weight } from 'lucide-react';
+import { ArrowLeft, Award, Calendar, Dog, Heart, Loader2, Phone, Ruler, Star, Stethoscope, Syringe, Weight } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { useDogs } from '../controllers/useDogs';
@@ -147,12 +147,12 @@ export const DogDetailPage = () => {
                       <p className="font-semibold">{dog.gender === 'male' ? 'Macho' : 'Fêmea'}</p>
                     </div>
                     <div className="text-center">
-                      <span className="text-primary text-lg">🏥</span>
+                      <Stethoscope className="h-5 w-5 mx-auto mb-1 text-primary" />
                       <p className="text-sm text-muted-foreground">Saúde</p>
                       <p className="font-semibold">{dog.health_status}</p>
                     </div>
                     <div className="text-center">
-                      <span className="text-primary text-lg">💉</span>
+                      <Syringe className="h-5 w-5 mx-auto mb-1 text-primary" />
                       <p className="text-sm text-muted-foreground">Vacinas</p>
                       <p className="font-semibold">{dog.vaccination_status}</p>
                     </div>
