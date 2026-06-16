@@ -25,8 +25,8 @@ View → Controller (hook) → Service → Supabase     em  src/features/{featur
 
 A migração do protótipo Lovable (`src/pages` + `src/hooks`) foi **concluída em 2026-06-05**
 (ver [docs/migration-checklist.md](docs/migration-checklist.md)). Features em `src/features/*`:
-`auth`, `marketing`, `dogs`, `puppies`, `hotel`, `faq`, `contacts`, `company`. Cada uma tem
-`models/` (tipos + zod) · `services/` (Supabase) · `controllers/` (hooks) · `views/` (páginas) · `index.ts` (barrel).
+`auth`, `marketing`, `dogs`, `puppies`, `hotel`, `faq`, `contacts`, `company`, `articles`, `team`.
+Cada uma tem `models/` (tipos + zod) · `services/` (Supabase) · `controllers/` (hooks) · `views/` (páginas) · `index.ts` (barrel).
 
 - **Código novo** segue esse modelo MVC; use `/feature <nome>` para o esqueleto.
 - Só restam fora de `features/`: `components/ui` + `components/layout` (shadcn/layout),
@@ -37,20 +37,20 @@ A migração do protótipo Lovable (`src/pages` + `src/hooks`) foi **concluída 
 ## Stack e comandos
 
 - **Dev**: `npm run dev` (Vite, porta **3000** — `strictPort`). Build: `npm run build`. Lint: `npm run lint`. Preview: `npm run preview`.
-- **Pacotes**: há lockfiles de bun, npm **e** pnpm no repo. O modelo-alvo (`.claude`) padroniza **`pnpm`** — ao migrar, consolide nele e remova os lockfiles legados; não gere um quarto. Confirme com o usuário antes de instalar deps.
+- **Pacotes**: gerenciador padrão é **`pnpm`** (único lockfile: `pnpm-lock.yaml`). Confirme com o usuário antes de instalar deps.
 - **TypeScript** + ESLint (flat config em [eslint.config.js](eslint.config.js)).
 
 ## Estrutura (MVC feature-based)
 
 | Caminho | Conteúdo |
 |---|---|
-| [src/App.tsx](src/App.tsx) | Rotas (público + `/admin/*`) importando views de `@/features/*`; providers (Query, Auth, Tooltip); bolha WhatsApp. |
+| [src/App.tsx](src/App.tsx) | Rotas (público + `/admin/*` protegidas por `ProtectedRoute`) importando views de `@/features/*`; providers (Query, Auth, Tooltip); bolha WhatsApp. |
 | [src/features/](src/features/) | Uma pasta por feature: `models/` · `services/` · `controllers/` · `views/` · `index.ts`. |
 | [src/integrations/supabase/](src/integrations/supabase/) | `client.ts` (cliente) e `types.ts` (schema gerado — **não editar à mão**). |
 | [src/components/ui/](src/components/ui/) | Componentes shadcn/ui (Radix). |
 | [src/components/layout/](src/components/layout/) | Header/Footer globais. |
 | [src/hooks/](src/hooks/) | Apenas utilitários globais (`use-mobile`, `use-toast`, `useImageUpload`). |
-| [src/pages/](src/pages/) | Apenas `NotFound.tsx` (catch-all). |
+| [src/pages/](src/pages/) | Apenas `NotFound.tsx` (catch-all, PT-BR). |
 | [supabase/migrations/](supabase/migrations/) | Migrations SQL (schema + RLS). |
 | Docker | [Dockerfile](Dockerfile), [docker-compose.yml](docker-compose.yml), [nginx.conf](nginx.conf), [README-docker.md](README-docker.md). |
 
@@ -61,11 +61,12 @@ A migração do protótipo Lovable (`src/pages` + `src/hooks`) foi **concluída 
 
 - **Alias de import**: use `@/...` para `src/...` (configurado em [vite.config.ts](vite.config.ts) e tsconfig).
 - **UI**: componha com shadcn/ui já presente em `src/components/ui/`; **não** traga outra lib de componentes. Estilo via Tailwind (`cn()` de [src/lib/utils.ts](src/lib/utils.ts)).
-- **Formulários**: `react-hook-form` + `zod` (schema no topo da página de management; siga o padrão de [PuppyManagement.tsx](src/pages/PuppyManagement.tsx)).
-- **Dados**: um hook por entidade (`usePuppies`, `useDogs`, ...). Padrão: `fetch*`, `create*`, `update*`, `delete*`, `refetch`; feedback com `toast` (sonner) em sucesso e erro.
-- **Exclusão é soft delete** (`is_active = false`) — **não** delete fisicamente; siga [usePuppies.ts](src/hooks/usePuppies.ts).
+- **Formulários**: `react-hook-form` + `zod` (schema em `models/{feature}.types.ts`; siga o padrão de [PuppyManagementPage.tsx](src/features/puppies/views/PuppyManagementPage.tsx)).
+- **Dados**: controllers usam **TanStack Query** (`useQuery` + `useMutation` + `useQueryClient`). Padrão: hooks separados por operação (`useXxx`, `useCreateXxx`, `useUpdateXxx`, `useDeleteXxx`); feedback com `toast` em sucesso e erro. Ver [useHotelPackages.ts](src/features/hotel/controllers/useHotelPackages.ts) como referência.
+- **Exclusão é soft delete** (`is_active = false`) — **não** delete fisicamente; siga [usePuppies.ts](src/features/puppies/controllers/usePuppies.ts).
 - **Idioma**: toda string de UI em **português brasileiro**.
 - **Imagens**: upload via [useImageUpload.ts](src/hooks/useImageUpload.ts) / [image-uploader.tsx](src/components/ui/image-uploader.tsx) (Supabase Storage), guardando URL em `image_url`/`images[]`.
+- **Acessibilidade**: botões ícone-only devem ter `aria-label`; erros de formulário inline (não `alert()`).
 
 ## Banco de dados / Supabase
 
@@ -75,10 +76,19 @@ A migração do protótipo Lovable (`src/pages` + `src/hooks`) foi **concluída 
 
 ## Cuidados importantes
 
-- **Rotas admin não têm guard client-side hoje**: `/admin/*` em [src/App.tsx](src/App.tsx) não usa `ProtectedRoute`/redirect — a segurança depende do RLS. Se for proteger, adicione guard por sessão/role; não enfraqueça o RLS para "facilitar".
+- **Rotas `/admin/*` protegidas por `ProtectedRoute`**: todas as rotas admin em [src/App.tsx](src/App.tsx) estão envoltas em `<ProtectedRoute>` ([src/features/auth/views/ProtectedRoute.tsx](src/features/auth/views/ProtectedRoute.tsx)) — redireciona para `/login` se não autenticado, preservando `state.from`. O RLS continua como segunda camada de segurança.
 - **Tabela `Leads` é compartilhada com a Léssie**: PK textual `id_conversa` é a chave de **dedup** usada pelo bot. Não altere essa semântica sem coordenar com o repo `workspace-lessie-astorhouse`. Cuidado: a tabela é `"Leads"` (L maiúsculo, sempre entre aspas no SQL).
 - **`.claude/` é a fonte da verdade de arquitetura/processo**: rules (MVC, segurança, workflow), commands (`/feature`, `/migration`, `/migration-audit`, `/review`, ...) e memory (regras de negócio do canil) já adaptados ao AstorHouse. Consulte antes de implementar.
-- **Resíduos de template**: [README-docker.md](README-docker.md) menciona "Dr. Stanley" e `portal.mibitech.com.br`, herdados de outro deploy — confirme o domínio real antes de usar.
+
+## Próximos passos conhecidos
+
+Ver [memory/project_next_steps.md](.claude/../../../Users/rlcun/.claude/projects/c--Projetos-astorhouse/memory/project_next_steps.md) para o backlog priorizado. Itens principais:
+1. Paginação na `FaqPage` (lista muito longa com dados reais)
+2. Testes automatizados (zero hoje — Vitest)
+3. CI/CD (GitHub Actions)
+4. Features `news`, `events`, `glossary`, `documents` (banco existe, sem CRUD)
+5. Redirect pós-login para rota originalmente solicitada (`state.from`)
+6. Code-splitting das rotas admin (`React.lazy`)
 
 ## Ao concluir tarefas
 
