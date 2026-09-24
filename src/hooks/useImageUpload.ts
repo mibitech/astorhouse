@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { compressImageForUpload } from '@/lib/image-compress';
 
 interface UseImageUploadReturn {
   uploading: boolean;
@@ -19,6 +20,11 @@ export const useImageUpload = (): UseImageUploadReturn => {
   ): Promise<string | null> => {
     try {
       setUploading(true);
+
+      // Ajusta a foto ao padrão de envio do WhatsApp antes de subir: acima de
+      // 5 MB a foto não chega ao cliente (a 1ª foto do Filhote 3 tinha 7,7 MB).
+      // Nunca recusa — reduz dimensão e, se preciso, qualidade.
+      file = await compressImageForUpload(file);
 
       // Generate unique filename
       const fileExt = file.name.split('.').pop();
