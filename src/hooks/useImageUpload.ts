@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { compressImageForUpload } from '@/lib/image-compress';
 
 interface UseImageUploadReturn {
   uploading: boolean;
@@ -19,6 +20,11 @@ export const useImageUpload = (): UseImageUploadReturn => {
   ): Promise<string | null> => {
     try {
       setUploading(true);
+
+      // Ajusta a foto ao padrão de envio do WhatsApp antes de subir: acima de
+      // 5 MB a foto não chega ao cliente (a 1ª foto do Filhote 3 tinha 7,7 MB).
+      // Nunca recusa — reduz dimensão e, se preciso, qualidade.
+      file = await compressImageForUpload(file);
 
       // Generate unique filename
       const fileExt = file.name.split('.').pop();
@@ -57,19 +63,14 @@ export const useImageUpload = (): UseImageUploadReturn => {
     path: string
   ): Promise<boolean> => {
     try {
-      console.log('Tentando deletar imagem:', path);
-      
-      // Extract path from URL if necessary
       let filePath = path;
-      
+
       if (path.includes('storage/v1/object/public/')) {
         const parts = path.split(`${bucket}/`);
         if (parts.length > 1) {
           filePath = parts[1];
         }
       }
-      
-      console.log('Caminho do arquivo para deletar:', filePath);
 
       const { error } = await supabase.storage
         .from(bucket)

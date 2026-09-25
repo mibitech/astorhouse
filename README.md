@@ -242,8 +242,27 @@ O banco de dados é PostgreSQL gerenciado pelo Supabase. Abaixo o diagrama conce
 | `documents` | Documentos e arquivos para download |
 | `glossary` | Glossário de termos técnicos |
 | `team_members` | Membros da equipe para a página Sobre |
-| `Leads` | Leads capturados via chatbot (n8n) |
+| `Leads` | Funil de leads/vendas (ver detalhe abaixo) — capturados via chatbot e atendimento |
 | `n8n_chat_histories` | Histórico de conversas do chatbot |
+
+#### Funil de Leads (`"Leads"`)
+
+Tabela com nome **case-sensitive** (`"Leads"`, criada com aspas — toda referência SQL precisa de aspas). PK histórica é `id_conversa`; também possui `id` (uuid, índice único) usado para referência externa. Capturada pelo atendimento (chatbot/WhatsApp) e acompanhada no backoffice operacional (agente Léssie Admin via Telegram).
+
+| Coluna | Tipo | Descrição |
+|---|---|---|
+| `id_conversa` | `text` (PK) | Chave da conversa de origem |
+| `id` | `uuid` (único) | Identificador estável do lead |
+| `nome` | `text` | Nome do lead |
+| `telefone` | `text` | Telefone de contato |
+| `email` | `text` | E-mail (opcional) |
+| `origem` | `text` | `whatsapp`, `site`, `instagram`, `indicacao`… |
+| `tipo_interesse` | `text` | `filhote`, `nova_ninhada`, `reserva`, `lista_espera`, `adestramento`, `hotel`, `reproducao`, `outro` |
+| `status` | `text` | Funil: `novo` · `em_andamento` · `convertido` · `perdido` · `cancelado` |
+| `puppy_id` | `uuid` → `puppies` | Filhote vinculado na conversão (opcional) |
+| `convertido_em` | `timestamptz` | Data/hora da conversão em venda |
+| `observacao` | `text` | Notas livres |
+| `created_at` / `updated_at` | `timestamptz` | Timestamps |
 
 ### Funções SQL Customizadas
 

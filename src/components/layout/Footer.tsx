@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Facebook, Instagram, Youtube } from 'lucide-react';
-import { useCompanyInfo } from '@/hooks/useCompanyInfo';
+import { useCompanyInfo, type SocialMedia } from '@/features/company';
 
 const Footer = () => {
   const { data: companyInfo } = useCompanyInfo();
+  const social = (companyInfo?.social_media ?? {}) as Partial<SocialMedia>;
 
   return (
     <footer className="bg-primary text-primary-foreground">
@@ -82,9 +83,9 @@ const Footer = () => {
               <div className="flex gap-3 pt-2">
                 {companyInfo?.social_media && typeof companyInfo.social_media === 'object' && (
                   <>
-                    {(companyInfo.social_media as any)?.facebook && (
+                    {social?.facebook && (
                       <a 
-                        href={(companyInfo.social_media as any).facebook} 
+                        href={social.facebook} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         aria-label="Facebook"
@@ -92,9 +93,9 @@ const Footer = () => {
                         <Facebook className="h-5 w-5 text-primary-foreground/60 hover:text-primary-foreground cursor-pointer transition-colors" />
                       </a>
                     )}
-                    {(companyInfo.social_media as any)?.instagram && (
+                    {social?.instagram && (
                       <a 
-                        href={(companyInfo.social_media as any).instagram} 
+                        href={social.instagram} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         aria-label="Instagram"
@@ -102,9 +103,9 @@ const Footer = () => {
                         <Instagram className="h-5 w-5 text-primary-foreground/60 hover:text-primary-foreground cursor-pointer transition-colors" />
                       </a>
                     )}
-                    {(companyInfo.social_media as any)?.youtube && (
+                    {social?.youtube && (
                       <a 
-                        href={(companyInfo.social_media as any).youtube} 
+                        href={social.youtube} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         aria-label="YouTube"

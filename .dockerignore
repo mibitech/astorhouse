@@ -1,0 +1,10 @@
+node_modules
+dist
+.git
+.github
+.claude
+docs
+*.md
+bun.lock
+bun.lockb
+package-lock.json
