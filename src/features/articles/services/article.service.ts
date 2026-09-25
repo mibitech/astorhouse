@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import type { TablesInsert } from '@/integrations/supabase/types';
 import { articleSchema, type Article, type ArticleFormData } from '../models/article.types';
 
 const ARTICLE_COLUMNS = 'id, title, content, excerpt, category, image_url, is_published, tags, created_at, updated_at';
@@ -28,7 +29,7 @@ export async function createArticle(input: ArticleFormData): Promise<Article> {
   const payload = articleSchema.parse(input);
   const { data, error } = await supabase
     .from('articles')
-    .insert(payload)
+    .insert(payload as TablesInsert<'articles'>)
     .select(ARTICLE_COLUMNS)
     .single();
 

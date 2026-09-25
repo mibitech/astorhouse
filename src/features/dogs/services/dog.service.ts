@@ -14,7 +14,7 @@ export async function getActiveDogs(): Promise<Dog[]> {
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return (data ?? []) as Dog[];
+  return (data ?? []) as unknown as Dog[];
 }
 
 export async function createDog(input: DogFormData): Promise<Dog> {
@@ -25,7 +25,7 @@ export async function createDog(input: DogFormData): Promise<Dog> {
     .single();
 
   if (error) throw error;
-  return data as Dog;
+  return data as unknown as Dog;
 }
 
 export async function updateDog(id: string, updates: Partial<Dog>): Promise<Dog> {
@@ -37,7 +37,7 @@ export async function updateDog(id: string, updates: Partial<Dog>): Promise<Dog>
     .single();
 
   if (error) throw error;
-  return data as Dog;
+  return data as unknown as Dog;
 }
 
 // Exclusão é soft delete (is_active = false) — regra de negócio do projeto.

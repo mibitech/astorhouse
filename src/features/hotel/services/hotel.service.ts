@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import type { TablesInsert } from '@/integrations/supabase/types';
 import { hotelPackageSchema, type HotelPackage, type HotelPackageInput } from '../models/hotel.types';
 
 const HOTEL_COLUMNS =
@@ -31,7 +32,7 @@ export async function createPackage(input: HotelPackageInput): Promise<HotelPack
   const payload = hotelPackageSchema.parse(input);
   const { data, error } = await supabase
     .from('hotel_packages')
-    .insert([payload])
+    .insert([payload as TablesInsert<'hotel_packages'>])
     .select(HOTEL_COLUMNS)
     .single();
 

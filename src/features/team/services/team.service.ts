@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import type { TablesInsert } from '@/integrations/supabase/types';
 import type { TeamMember, TeamMemberFormData } from '../models/team.types';
 
 const COLUMNS = 'id, name, position, bio, photo_url, is_active, order_index, created_at, updated_at';
@@ -27,7 +28,7 @@ export async function getAllTeamMembers(): Promise<TeamMember[]> {
 export async function createTeamMember(input: TeamMemberFormData): Promise<TeamMember> {
   const { data, error } = await supabase
     .from('team_members')
-    .insert(input)
+    .insert(input as TablesInsert<'team_members'>)
     .select(COLUMNS)
     .single();
 

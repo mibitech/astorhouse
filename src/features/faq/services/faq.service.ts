@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import type { TablesInsert } from '@/integrations/supabase/types';
 import { faqSchema, type FAQ, type FAQFormData } from '../models/faq.types';
 
 // Colunas explícitas — evita select('*') (ver rules/security.md)
@@ -19,7 +20,7 @@ export async function createFaq(input: FAQFormData): Promise<FAQ> {
   const payload = faqSchema.parse(input); // valida antes de persistir
   const { data, error } = await supabase
     .from('faq')
-    .insert(payload)
+    .insert(payload as TablesInsert<'faq'>)
     .select(FAQ_COLUMNS)
     .single();
 
