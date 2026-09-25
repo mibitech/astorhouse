@@ -451,11 +451,13 @@ export const PuppiesPage = () => {
                       <CarouselContent>
                         {selectedPuppy.images.map((image, index) => (
                           <CarouselItem key={index}>
-                            <div className="aspect-video bg-muted flex items-center justify-center rounded-lg overflow-hidden">
+                            {/* Foto INTEIRA (object-contain): as fotos são quase todas
+                                retrato e a área 16:9 com object-cover mostrava só o meio. */}
+                            <div className="h-[55vh] max-h-[520px] min-h-[260px] bg-muted flex items-center justify-center rounded-lg overflow-hidden">
                               <img
                                 src={image}
                                 alt={`${selectedPuppy.name} - Foto ${index + 1}`}
-                                className="w-full h-full object-cover"
+                                className="max-w-full max-h-full object-contain"
                                 onError={(e) => {
                                   e.currentTarget.src = '/placeholder.svg';
                                 }}
