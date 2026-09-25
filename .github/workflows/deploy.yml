@@ -1,0 +1,108 @@
+name: CI/CD
+
+# Mesmo molde do nexus e do lojaamordapatria: qualidade → imagem no GHCR →
+# deploy por SHA com verificação. `dev` só builda; `main` publica em produção.
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [main]
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+
+jobs:
+  # ── Job 1: qualidade ─────────────────────────────────────────────────────
+  # Portão obrigatório: typecheck + lint. Falhou → nada avança.
+  quality:
+    name: Typecheck / Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Instalar dependências
+        run: pnpm install --frozen-lockfile
+
+      # O tsconfig.json da raiz só referencia os projetos (files: []), então
+      # `tsc --noEmit` nele não checaria nada — aponta para o do app.
+      - name: Typecheck
+        run: pnpm exec tsc --noEmit -p tsconfig.app.json
+
+      - name: Lint
+        run: pnpm lint
+
+  # ── Job 2: build + push da imagem ────────────────────────────────────────
+  # Só em push (não em PR). Publica duas tags: :latest e :<SHA>.
+  build-push:
+    name: Build & Push Docker
+    needs: quality
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build e push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}
+          # Sem cache: o cache gha já serviu a camada de build antiga em outro
+          # projeto (SHA novo, bundle velho). Build de frontend é rápido.
+          no-cache: true
+
+  # ── Job 3: deploy via SSH + SHA ──────────────────────────────────────────
+  # Tag SHA (nunca :latest) → pull garantido. Só em push na main.
+  deploy:
+    name: Deploy via SSH
+    needs: build-push
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Deploy via SSH (docker service update com SHA)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -e
+            TARGET="ghcr.io/mibitech/astorhouse:${{ github.sha }}"
+            docker service update \
+              --force \
+              --with-registry-auth \
+              --image "$TARGET" \
+              astorhouse_frontend
+            # O `docker service update` pode reportar "converged" sem trocar a
+            # imagem (armadilha SHA): confirma que o Spec bate com o alvo.
+            ACTUAL=$(docker service inspect astorhouse_frontend \
+              --format '{{.Spec.TaskTemplate.ContainerSpec.Image}}' | cut -d@ -f1)
+            echo "esperado: $TARGET"
+            echo "atual:    $ACTUAL"
+            if [ "$ACTUAL" != "$TARGET" ]; then
+              echo "::error::service NÃO atualizou para o SHA alvo (armadilha SHA)"
+              exit 1
+            fi
+            echo "Deploy ${{ github.sha }} concluído e VERIFICADO."
