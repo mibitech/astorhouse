@@ -111,7 +111,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                   onChange={(e) => handleFileUpload(e.target.files)}
                 />
                 <p className="text-xs text-muted-foreground mt-2">
-                  PNG, JPG, JPEG até 10MB • Máximo {maxImages - currentImages.length} imagens
+                  PNG, JPG, JPEG • fotos grandes são ajustadas automaticamente • Máximo {maxImages - currentImages.length} imagens
                 </p>
               </>
             )}
