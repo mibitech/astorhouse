@@ -85,8 +85,8 @@ export const DogDetailPage = () => {
                     <CarouselContent>
                       {allImages.map((img, idx) => (
                         <CarouselItem key={idx}>
-                          <div className="aspect-square rounded-lg overflow-hidden bg-muted">
-                            <img src={img} alt={`${dog.name} - foto ${idx + 1}`} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }} />
+                          <div className="aspect-square rounded-lg overflow-hidden bg-muted flex items-center justify-center">
+                            <img src={img} alt={`${dog.name} - foto ${idx + 1}`} className="max-w-full max-h-full object-contain" onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }} />
                           </div>
                         </CarouselItem>
                       ))}
@@ -95,8 +95,8 @@ export const DogDetailPage = () => {
                     <CarouselNext />
                   </Carousel>
                 ) : (
-                  <div className="aspect-square rounded-lg overflow-hidden bg-muted">
-                    <img src={allImages[0]} alt={dog.name} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }} />
+                  <div className="aspect-square rounded-lg overflow-hidden bg-muted flex items-center justify-center">
+                    <img src={allImages[0]} alt={dog.name} className="max-w-full max-h-full object-contain" onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }} />
                   </div>
                 )
               ) : (
