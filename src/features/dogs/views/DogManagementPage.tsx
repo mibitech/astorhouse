@@ -315,7 +315,7 @@ export const DogManagementPage = () => {
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormLabel>Raça *</FormLabel>
-                                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                      <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                           <SelectTrigger>
                                             <SelectValue placeholder="Selecione a raça" />
@@ -341,7 +341,7 @@ export const DogManagementPage = () => {
                                       <FormControl>
                                         <RadioGroup
                                           onValueChange={field.onChange}
-                                          defaultValue={field.value}
+                                          value={field.value}
                                           className="flex flex-row space-x-6"
                                         >
                                           <div className="flex items-center space-x-2">
@@ -459,7 +459,7 @@ export const DogManagementPage = () => {
                                   render={({ field }) => (
                                     <FormItem>
                                       <FormLabel>Status *</FormLabel>
-                                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                      <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                           <SelectTrigger>
                                             <SelectValue placeholder="Selecione o status" />

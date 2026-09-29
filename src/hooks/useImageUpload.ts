@@ -38,7 +38,10 @@ export const useImageUpload = (): UseImageUploadReturn => {
 
       if (uploadError) {
         console.error('Error uploading image:', uploadError);
-        toast.error('Erro ao fazer upload da imagem');
+        // Mostra o motivo real (ex.: sessão expirada / sem permissão / bucket
+        // indisponível) em vez de um "erro ao enviar" genérico — sem isso o
+        // operador não sabe se precisa logar de novo ou tentar outra foto.
+        toast.error(`Erro ao enviar "${file.name}": ${uploadError.message}`);
         return null;
       }
 
@@ -47,11 +50,11 @@ export const useImageUpload = (): UseImageUploadReturn => {
         .from(bucket)
         .getPublicUrl(filePath);
 
-      toast.success('Imagem enviada com sucesso!');
       return data.publicUrl;
     } catch (error) {
       console.error('Unexpected error:', error);
-      toast.error('Erro inesperado ao fazer upload');
+      const message = error instanceof Error ? error.message : 'erro desconhecido';
+      toast.error(`Erro inesperado ao enviar "${file.name}": ${message}`);
       return null;
     } finally {
       setUploading(false);

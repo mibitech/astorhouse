@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { useImageUpload } from '@/hooks/useImageUpload';
+import { toast } from 'sonner';
 
 interface ImageUploaderProps {
   currentImages?: string[];
@@ -29,13 +30,45 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     if (!files || files.length === 0) return;
 
     const remainingSlots = maxImages - currentImages.length;
-    const filesToUpload = Array.from(files).slice(0, remainingSlots);
+    if (remainingSlots <= 0) {
+      toast.error(`Limite de ${maxImages} imagens atingido. Remova alguma antes de adicionar outra.`);
+      return;
+    }
 
-    const uploadPromises = filesToUpload.map(file => uploadImage(file, bucket, folder));
-    const uploadedUrls = await Promise.all(uploadPromises);
-    
-    const newImages = uploadedUrls.filter(url => url !== null) as string[];
-    onImagesChange([...currentImages, ...newImages]);
+    const allFiles = Array.from(files);
+    const filesToUpload = allFiles.slice(0, remainingSlots);
+    if (allFiles.length > filesToUpload.length) {
+      toast.warning(
+        `Só ${filesToUpload.length} de ${allFiles.length} imagens serão enviadas (limite de ${maxImages}).`
+      );
+    }
+
+    // Envia uma de cada vez: em paralelo, uma falha de sessão/RLS costuma
+    // derrubar todo o lote junto (mesmo erro em N requisições simultâneas),
+    // fazendo o operador achar que "não deu pra inserir nenhuma imagem"
+    // quando na verdade a 1ª já diria a causa real.
+    const newImages: string[] = [];
+    let failures = 0;
+    for (const file of filesToUpload) {
+      const url = await uploadImage(file, bucket, folder);
+      if (url) {
+        newImages.push(url);
+      } else {
+        failures += 1;
+      }
+    }
+
+    if (newImages.length > 0) {
+      onImagesChange([...currentImages, ...newImages]);
+      toast.success(
+        newImages.length === 1
+          ? 'Imagem enviada com sucesso!'
+          : `${newImages.length} imagens enviadas com sucesso!`
+      );
+    }
+    if (failures > 0 && newImages.length > 0) {
+      toast.error(`${failures} imagem(ns) não enviada(s) — veja o motivo acima.`);
+    }
   };
 
   const handleRemoveImage = async (imageUrl: string) => {
