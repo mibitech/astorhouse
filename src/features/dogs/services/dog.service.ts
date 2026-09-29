@@ -28,16 +28,16 @@ export async function createDog(input: DogFormData): Promise<Dog> {
   return data as unknown as Dog;
 }
 
-export async function updateDog(id: string, updates: Partial<Dog>): Promise<Dog> {
+export async function updateDog(id: string, updates: Partial<Dog>): Promise<Dog | null> {
   const { data, error } = await supabase
     .from('dogs')
     .update(updates)
     .eq('id', id)
     .select(DOG_COLUMNS)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
-  return data as unknown as Dog;
+  return (data as unknown as Dog | null) ?? null;
 }
 
 // Exclusão é soft delete (is_active = false) — regra de negócio do projeto.

@@ -53,7 +53,11 @@ export const useDogs = () => {
 
   const updateDog = async (id: string, updates: Partial<Dog>): Promise<Dog | null> => {
     try {
-      return await updateMutation.mutateAsync({ id, ...updates });
+      const result = await updateMutation.mutateAsync({ id, ...updates });
+      if (!result) {
+        toast.error('Cão não encontrado ou sem permissão para atualizar');
+      }
+      return result;
     } catch {
       return null;
     }

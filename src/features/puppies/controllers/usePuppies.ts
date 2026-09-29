@@ -21,7 +21,7 @@ export const usePuppies = () => {
       queryClient.invalidateQueries({ queryKey: PUPPIES_KEY });
       toast.success('Filhote criado com sucesso!');
     },
-    onError: () => toast.error('Erro ao criar filhote'),
+    onError: (err: Error) => toast.error('Erro ao criar filhote: ' + err.message),
   });
 
   const updateMutation = useMutation({
@@ -40,7 +40,7 @@ export const usePuppies = () => {
       queryClient.invalidateQueries({ queryKey: PUPPIES_KEY });
       toast.success('Filhote excluído com sucesso!');
     },
-    onError: () => toast.error('Erro ao excluir filhote'),
+    onError: (err: Error) => toast.error('Erro ao excluir filhote: ' + err.message),
   });
 
   const createPuppy = async (puppy: PuppyFormData): Promise<Puppy | null> => {
