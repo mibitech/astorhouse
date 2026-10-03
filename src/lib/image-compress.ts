@@ -30,7 +30,36 @@ function toBlob(canvas: HTMLCanvasElement, quality: number): Promise<Blob | null
   return new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
 }
 
-async function render(bitmap: ImageBitmap, maxSide: number): Promise<HTMLCanvasElement> {
+/** Imagem decodificada: ImageBitmap ou, no último recurso, <img>. */
+type Decoded = { source: CanvasImageSource; width: number; height: number; close: () => void };
+
+/**
+ * Decodifica a foto. Em 01/10/2026 fotos de 7-8 MB subiram sem redução: em
+ * alguns navegadores `createImageBitmap` com a opção `imageOrientation` lança
+ * erro, e o catch devolvia a original. Agora tenta sem a opção e, por último,
+ * pela tag <img> (que já respeita a orientação EXIF nos navegadores atuais).
+ */
+async function decode(file: File): Promise<Decoded> {
+  for (const opts of [{ imageOrientation: "from-image" } as ImageBitmapOptions, undefined]) {
+    try {
+      const bmp = await createImageBitmap(file, opts);
+      return { source: bmp, width: bmp.width, height: bmp.height, close: () => bmp.close() };
+    } catch {
+      // tenta o próximo modo
+    }
+  }
+  const url = URL.createObjectURL(file);
+  try {
+    const img = new Image();
+    img.src = url;
+    await img.decode();
+    return { source: img, width: img.naturalWidth, height: img.naturalHeight, close: () => {} };
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+async function render(bitmap: Decoded, maxSide: number): Promise<HTMLCanvasElement> {
   const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
   const canvas = document.createElement("canvas");
   canvas.width = Math.max(1, Math.round(bitmap.width * scale));
@@ -40,7 +69,7 @@ async function render(bitmap: ImageBitmap, maxSide: number): Promise<HTMLCanvasE
   // JPEG não tem transparência: fundo branco evita PNG transparente virar preto.
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  ctx.drawImage(bitmap.source, 0, 0, canvas.width, canvas.height);
   return canvas;
 }
 
@@ -54,9 +83,9 @@ function renamed(name: string): string {
 export async function compressImageForUpload(file: File): Promise<File> {
   if (!file.type.startsWith("image/") || SKIP_TYPES.has(file.type)) return file;
 
-  let bitmap: ImageBitmap | null = null;
+  let bitmap: Decoded | null = null;
   try {
-    bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+    bitmap = await decode(file);
     const alreadyOk =
       file.size <= TARGET_BYTES && Math.max(bitmap.width, bitmap.height) <= MAX_SIDE_PX;
     if (alreadyOk) return file;
