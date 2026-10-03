@@ -25,6 +25,15 @@ export const useImageUpload = (): UseImageUploadReturn => {
       // 5 MB a foto não chega ao cliente (a 1ª foto do Filhote 3 tinha 7,7 MB).
       // Nunca recusa — reduz dimensão e, se preciso, qualidade.
       file = await compressImageForUpload(file);
+      // A redução pode falhar no aparelho (01/10/2026: fotos de 7-8 MB subiram
+      // assim, em silêncio). A foto sobe mesmo assim, mas quem cadastra fica
+      // sabendo — o atendimento tenta reduzir no envio, sem garantia.
+      if (file.type.startsWith('image/') && file.size > 5 * 1024 * 1024) {
+        toast.warning(
+          `"${file.name}" ficou com ${(file.size / 1048576).toFixed(1)} MB e pode não chegar pelo WhatsApp. ` +
+            'Se puder, envie uma versão menor (ou cadastre pelo computador).',
+        );
+      }
 
       // Generate unique filename
       const fileExt = file.name.split('.').pop();
