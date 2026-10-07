@@ -15,7 +15,7 @@ import { HotelPage, HotelManagementPage } from "@/features/hotel";
 import NotFound from "./pages/NotFound";
 import { FaqPage, FaqManagementPage } from "@/features/faq";
 import { CompanyInfoManagementPage } from "@/features/company";
-import { WhatsAppBubble } from "@/components/ui/whatsapp-bubble";
+import { WebChat } from "@/components/ui/web-chat";
 
 const queryClient = new QueryClient();
 
@@ -49,7 +49,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-        <WhatsAppBubble phoneNumber="551140354243" />
+        <WebChat />
       </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
