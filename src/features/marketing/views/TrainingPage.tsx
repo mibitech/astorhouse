@@ -221,7 +221,7 @@ export const TrainingPage = () => {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a
-              href="https://wa.me/551140354243?text=Olá, gostaria de saber mais sobre o programa de adestramento"
+              href={`https://wa.me/551140354243?text=${encodeURIComponent("Olá, gostaria de saber mais sobre o programa de adestramento")}`}
               target="_blank"
               rel="noopener noreferrer"
             >

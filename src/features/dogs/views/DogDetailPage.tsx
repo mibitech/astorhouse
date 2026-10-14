@@ -23,6 +23,27 @@ const breedLabels: Record<string, string> = {
   rottweiler: 'Rottweiler',
 };
 
+/**
+ * Mensagem do botão de WhatsApp. Os cães desta página são o PLANTEL (pais dos
+ * filhotes): "quero saber mais sobre o cão LUA" fazia o cliente — e a IA do
+ * atendimento — tratar a matriz como filhote à venda (conversas 301/302/309,
+ * out/2026). Só o cão marcado como disponível é perguntado por ele mesmo.
+ */
+function mensagemWhatsApp(dog: { name: string; breed: string; gender: string; status: string }): string {
+  const raca = breedLabels[dog.breed] || dog.breed;
+  const nome = dog.name.trim();
+  if (dog.status === 'disponivel') {
+    return `Olá! Vi ${dog.gender === 'female' ? 'a cadela' : 'o cão'} ${nome} (${raca}) no site e gostaria de saber mais.`;
+  }
+  const quem =
+    dog.status === 'reprodutora'
+      ? `a matriz ${nome}`
+      : dog.status === 'garanhao'
+        ? `o padreador ${nome}`
+        : `${dog.gender === 'female' ? 'a cadela' : 'o cão'} ${nome}, do plantel do canil,`;
+  return `Olá! Vi no site ${quem} (${raca}) e gostaria de saber sobre os filhotes.`;
+}
+
 export const DogDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { dogs, loading } = useDogs();
@@ -207,7 +228,7 @@ export const DogDetailPage = () => {
                   Voltar
                 </Button>
                 <a
-                  href={`https://wa.me/551140354243?text=Olá, gostaria de saber mais sobre o cão ${dog.name}`}
+                  href={`https://wa.me/551140354243?text=${encodeURIComponent(mensagemWhatsApp(dog))}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

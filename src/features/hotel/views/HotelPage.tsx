@@ -259,7 +259,7 @@ export function HotelPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
-                href="https://wa.me/551140354243?text=Olá, gostaria de informações sobre hospedagem canina"
+                href={`https://wa.me/551140354243?text=${encodeURIComponent("Olá, gostaria de informações sobre hospedagem canina")}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
