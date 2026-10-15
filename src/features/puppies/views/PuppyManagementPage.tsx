@@ -37,13 +37,13 @@ const puppySchema = z.object({
   health_status: z.string().min(1, 'Status de saúde é obrigatório'),
   vaccination_status: z.string().min(1, 'Status de vacinação é obrigatório'),
   microchip: z.string().nullable().optional(),
-  pedigree: z.string().optional(),
+  pedigree: z.string().nullable().optional(),
   achievements: z.array(z.string()).default([]),
   image_url: z.string().optional().nullable(),
   images: z.array(z.string()).default([]),
   parents: z.object({
-    father: z.string().optional(),
-    mother: z.string().optional(),
+    father: z.string().nullable().optional(),
+    mother: z.string().nullable().optional(),
   }).optional(),
   medical_records: z.object({
     exams: z.array(z.string()).default([]),
@@ -52,9 +52,89 @@ const puppySchema = z.object({
   }).optional(),
   is_active: z.boolean().default(true),
   is_available_for_sale: z.boolean().default(true),
-  price: z.number().optional(),
+  price: z.number().nullable().optional(),
   notes: z.string().optional().nullable(),
 });
+
+// Valores de um cadastro em branco. "Novo filhote" sempre parte daqui — nunca de
+// form.reset() sem argumento, que no react-hook-form volta ao ÚLTIMO reset(valores)
+// (o filhote editado antes), e o cadastro novo herdava fotos, preço e pais dele.
+const EMPTY_PUPPY: PuppyFormData = {
+  name: '',
+  breed: 'australian_shepherd',
+  age: '',
+  birth_date: '',
+  color: '',
+  gender: 'male',
+  status: 'disponivel',
+  weight: 0,
+  height: 0,
+  description: '',
+  temperament: '',
+  health_status: '',
+  vaccination_status: '',
+  microchip: '',
+  pedigree: '',
+  achievements: [],
+  image_url: null,
+  images: [],
+  parents: { father: '', mother: '' },
+  medical_records: { exams: [], vaccinations: [], treatments: [] },
+  notes: '',
+  price: undefined,
+  is_active: true,
+  is_available_for_sale: true,
+};
+
+// Leva só os campos do formulário e troca null do banco por vazio — senão a
+// validação recusa o campo em silêncio e o "Atualizar" não salva.
+const toFormValues = (puppy: Puppy): PuppyFormData => ({
+  ...EMPTY_PUPPY,
+  name: puppy.name ?? '',
+  breed: puppy.breed,
+  age: puppy.age ?? '',
+  birth_date: puppy.birth_date ?? '',
+  color: puppy.color ?? '',
+  gender: puppy.gender,
+  status: puppy.status,
+  weight: puppy.weight ?? 0,
+  height: puppy.height ?? 0,
+  description: puppy.description ?? '',
+  temperament: puppy.temperament ?? '',
+  health_status: puppy.health_status ?? '',
+  vaccination_status: puppy.vaccination_status ?? '',
+  microchip: puppy.microchip ?? '',
+  pedigree: puppy.pedigree ?? '',
+  achievements: puppy.achievements ?? [],
+  image_url: puppy.image_url ?? null,
+  images: puppy.images ?? [],
+  parents: { father: puppy.parents?.father ?? '', mother: puppy.parents?.mother ?? '' },
+  medical_records: {
+    exams: puppy.medical_records?.exams ?? [],
+    vaccinations: puppy.medical_records?.vaccinations ?? [],
+    treatments: puppy.medical_records?.treatments ?? [],
+  },
+  notes: puppy.notes ?? '',
+  price: puppy.price ?? undefined,
+  is_active: puppy.is_active ?? true,
+  is_available_for_sale: puppy.is_available_for_sale ?? true,
+});
+
+const FIELD_LABELS: Record<string, string> = {
+  name: 'Nome', breed: 'Raça', birth_date: 'Data de nascimento', age: 'Idade', color: 'Cor',
+  gender: 'Sexo', status: 'Status', weight: 'Peso', height: 'Altura', description: 'Descrição',
+  temperament: 'Temperamento', health_status: 'Status de saúde', vaccination_status: 'Status de vacinação',
+  microchip: 'Microchip', pedigree: 'Pedigree', price: 'Preço', notes: 'Observações', parents: 'Pais',
+};
+
+const ageFromBirthDate = (birthDate: string): string | null => {
+  try {
+    const weeks = differenceInWeeks(new Date(), parseISO(birthDate));
+    return Number.isFinite(weeks) && weeks >= 0 ? `${weeks} semanas` : null;
+  } catch {
+    return null;
+  }
+};
 
 export const PuppyManagementPage = () => {
   const { puppies, loading, error, createPuppy, updatePuppy, deletePuppy } = usePuppies();
@@ -68,76 +148,43 @@ export const PuppyManagementPage = () => {
 
   const form = useForm<PuppyFormData>({
     resolver: zodResolver(puppySchema),
-    defaultValues: {
-      name: '',
-      breed: 'australian_shepherd',
-      age: '',
-      birth_date: '',
-      color: '',
-      gender: 'male',
-      status: 'disponivel',
-      weight: 0,
-      height: 0,
-      description: '',
-      temperament: '',
-      health_status: '',
-      vaccination_status: '',
-      microchip: '',
-      pedigree: '',
-      achievements: [],
-      images: [],
-      parents: {
-        father: '',
-        mother: '',
-      },
-      medical_records: {
-        exams: [],
-        vaccinations: [],
-        treatments: [],
-      },
-      notes: '',
-      is_active: true,
-      is_available_for_sale: true,
-    },
+    defaultValues: EMPTY_PUPPY,
   });
 
   // Calcular idade automaticamente com base na data de nascimento
   useEffect(() => {
     const subscription = form.watch((value, { name }) => {
       if (name === 'birth_date' && value.birth_date) {
-        try {
-          const birthDate = parseISO(value.birth_date);
-          const weeks = differenceInWeeks(new Date(), birthDate);
-          form.setValue('age', `${weeks} semanas`);
-        } catch (error) {
-          console.error('Erro ao calcular idade:', error);
-        }
+        const age = ageFromBirthDate(value.birth_date);
+        if (age) form.setValue('age', age, { shouldValidate: true });
       }
     });
     return () => subscription.unsubscribe();
   }, [form]);
 
   const onSubmit = async (data: PuppyFormData) => {
-    if (editingPuppy) {
-      const result = await updatePuppy(editingPuppy.id, data);
-      if (result) {
-        setIsDialogOpen(false);
-        setEditingPuppy(null);
-        form.reset();
-      }
-    } else {
-      const result = await createPuppy(data);
-      if (result) {
-        setIsDialogOpen(false);
-        setEditingPuppy(null);
-        form.reset();
-      }
+    // A idade gravada fica velha se só mudou o resto do cadastro: recalcula na hora de salvar.
+    const payload = { ...data, age: ageFromBirthDate(data.birth_date) ?? data.age };
+    const result = editingPuppy
+      ? await updatePuppy(editingPuppy.id, payload)
+      : await createPuppy(payload);
+    if (result) {
+      setIsDialogOpen(false);
+      setEditingPuppy(null);
+      form.reset(EMPTY_PUPPY);
     }
+  };
+
+  // O erro aparece embaixo do campo, que pode estar fora da tela num formulário longo —
+  // sem este aviso o operador só via o botão "não fazer nada".
+  const onInvalid = (errors: Record<string, unknown>) => {
+    const fields = Object.keys(errors).map((key) => FIELD_LABELS[key] ?? key);
+    toast.error(`Não foi possível salvar. Confira: ${fields.join(', ')}.`);
   };
 
   const handleEdit = (puppy: Puppy) => {
     setEditingPuppy(puppy);
-    form.reset(puppy);
+    form.reset(toFormValues(puppy));
     setIsDialogOpen(true);
   };
 
@@ -147,7 +194,7 @@ export const PuppyManagementPage = () => {
 
   const handleNewPuppy = () => {
     setEditingPuppy(null);
-    form.reset();
+    form.reset(EMPTY_PUPPY);
     setIsDialogOpen(true);
   };
 
@@ -311,7 +358,7 @@ export const PuppyManagementPage = () => {
                       
                       <Form {...form}>
                         <form
-                          onSubmit={form.handleSubmit(onSubmit)}
+                          onSubmit={form.handleSubmit(onSubmit, onInvalid)}
                           className="space-y-6"
                         >
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -614,6 +661,7 @@ export const PuppyManagementPage = () => {
                                           step="0.01"
                                           placeholder="3500.00"
                                           {...field}
+                                          value={field.value ?? ''}
                                           onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
                                         />
                                       </FormControl>
@@ -638,7 +686,7 @@ export const PuppyManagementPage = () => {
                                   <FormItem>
                                     <FormLabel>Mãe</FormLabel>
                                     <FormControl>
-                                      <Input placeholder="Nome da mãe" {...field} />
+                                      <Input placeholder="Nome da mãe" {...field} value={field.value ?? ''} />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
@@ -652,7 +700,7 @@ export const PuppyManagementPage = () => {
                                   <FormItem>
                                     <FormLabel>Pai</FormLabel>
                                     <FormControl>
-                                      <Input placeholder="Nome do pai" {...field} />
+                                      <Input placeholder="Nome do pai" {...field} value={field.value ?? ''} />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>

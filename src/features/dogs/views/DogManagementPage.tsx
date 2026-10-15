@@ -35,14 +35,14 @@ const dogSchema = z.object({
   temperament: z.string().min(1, 'Temperamento é obrigatório'),
   health_status: z.string().min(1, 'Status de saúde é obrigatório'),
   vaccination_status: z.string().min(1, 'Status de vacinação é obrigatório'),
-  microchip: z.string().optional(),
-  pedigree: z.string().optional(),
+  microchip: z.string().nullable().optional(),
+  pedigree: z.string().nullable().optional(),
   achievements: z.array(z.string()).default([]),
-  image_url: z.string().optional(),
+  image_url: z.string().nullable().optional(),
   images: z.array(z.string()).default([]),
   parents: z.object({
-    father: z.string().optional(),
-    mother: z.string().optional(),
+    father: z.string().nullable().optional(),
+    mother: z.string().nullable().optional(),
   }).optional(),
   offspring: z.array(z.string()).default([]),
   medical_records: z.object({
@@ -52,9 +52,81 @@ const dogSchema = z.object({
   }).optional(),
   is_active: z.boolean().default(true),
   is_available_for_breeding: z.boolean().default(false),
-  price: z.number().optional(),
-  notes: z.string().optional(),
+  price: z.number().nullable().optional(),
+  notes: z.string().nullable().optional(),
 });
+
+// "Novo cão" sempre parte daqui — form.reset() sem argumento volta ao último
+// reset(valores), ou seja, ao cão editado antes.
+const EMPTY_DOG: DogFormData = {
+  name: '',
+  breed: 'australian_shepherd',
+  age: '',
+  birth_date: '',
+  color: '',
+  gender: 'male',
+  status: 'jovem_promessa',
+  weight: 0,
+  height: 0,
+  description: '',
+  temperament: '',
+  health_status: '',
+  vaccination_status: '',
+  microchip: '',
+  pedigree: '',
+  achievements: [],
+  image_url: undefined,
+  images: [],
+  parents: { father: '', mother: '' },
+  offspring: [],
+  medical_records: { exams: [], vaccinations: [], treatments: [] },
+  is_active: true,
+  is_available_for_breeding: false,
+  price: undefined,
+  notes: '',
+};
+
+// Só os campos do formulário, com null do banco trocado por vazio — senão a
+// validação recusa o campo e o "Atualizar" não salva (2 cães sem microchip/preço).
+const toFormValues = (dog: Dog): DogFormData => ({
+  ...EMPTY_DOG,
+  name: dog.name ?? '',
+  breed: dog.breed,
+  age: dog.age ?? '',
+  birth_date: dog.birth_date ?? '',
+  color: dog.color ?? '',
+  gender: dog.gender,
+  status: dog.status,
+  weight: dog.weight ?? 0,
+  height: dog.height ?? 0,
+  description: dog.description ?? '',
+  temperament: dog.temperament ?? '',
+  health_status: dog.health_status ?? '',
+  vaccination_status: dog.vaccination_status ?? '',
+  microchip: dog.microchip ?? '',
+  pedigree: dog.pedigree ?? '',
+  achievements: dog.achievements ?? [],
+  image_url: dog.image_url ?? undefined,
+  images: dog.images ?? [],
+  parents: { father: dog.parents?.father ?? '', mother: dog.parents?.mother ?? '' },
+  offspring: dog.offspring ?? [],
+  medical_records: {
+    exams: dog.medical_records?.exams ?? [],
+    vaccinations: dog.medical_records?.vaccinations ?? [],
+    treatments: dog.medical_records?.treatments ?? [],
+  },
+  is_active: dog.is_active ?? true,
+  is_available_for_breeding: dog.is_available_for_breeding ?? false,
+  price: dog.price ?? undefined,
+  notes: dog.notes ?? '',
+});
+
+const FIELD_LABELS: Record<string, string> = {
+  name: 'Nome', breed: 'Raça', birth_date: 'Data de nascimento', age: 'Idade', color: 'Cor',
+  gender: 'Sexo', status: 'Status', weight: 'Peso', height: 'Altura', description: 'Descrição',
+  temperament: 'Temperamento', health_status: 'Status de saúde', vaccination_status: 'Status de vacinação',
+  microchip: 'Microchip', pedigree: 'Pedigree', price: 'Preço', notes: 'Observações', parents: 'Pais',
+};
 
 export const DogManagementPage = () => {
   const { dogs, loading, error, createDog, updateDog, deleteDog } = useDogs();
@@ -68,26 +140,7 @@ export const DogManagementPage = () => {
 
   const form = useForm<DogFormData>({
     resolver: zodResolver(dogSchema),
-    defaultValues: {
-      name: '',
-      breed: 'australian_shepherd',
-      age: '',
-      birth_date: '',
-      color: '',
-      gender: 'male',
-      status: 'jovem_promessa',
-      weight: 0,
-      height: 0,
-      description: '',
-      temperament: '',
-      health_status: '',
-      vaccination_status: '',
-      achievements: [],
-      images: [],
-      offspring: [],
-      is_active: true,
-      is_available_for_breeding: false,
-    },
+    defaultValues: EMPTY_DOG,
   });
 
   const onSubmit = async (data: DogFormData) => {
@@ -97,7 +150,7 @@ export const DogManagementPage = () => {
       if (result) {
         setIsDialogOpen(false);
         setEditingDog(null);
-        form.reset();
+        form.reset(EMPTY_DOG);
       }
     } else {
       // Create new dog
@@ -105,15 +158,21 @@ export const DogManagementPage = () => {
       if (result) {
         setIsDialogOpen(false);
         setEditingDog(null);
-        form.reset();
+        form.reset(EMPTY_DOG);
       }
     }
   };
 
   const handleEdit = (dog: Dog) => {
     setEditingDog(dog);
-    form.reset(dog);
+    form.reset(toFormValues(dog));
     setIsDialogOpen(true);
+  };
+
+  // O erro fica embaixo do campo, às vezes fora da tela: avisa o que falta.
+  const onInvalid = (errors: Record<string, unknown>) => {
+    const fields = Object.keys(errors).map((key) => FIELD_LABELS[key] ?? key);
+    toast.error(`Não foi possível salvar. Confira: ${fields.join(', ')}.`);
   };
 
   const handleDelete = async (id: string) => {
@@ -122,7 +181,7 @@ export const DogManagementPage = () => {
 
   const handleNewDog = () => {
     setEditingDog(null);
-    form.reset();
+    form.reset(EMPTY_DOG);
     setIsDialogOpen(true);
   };
 
@@ -287,7 +346,7 @@ export const DogManagementPage = () => {
                       </DialogHeader>
                       
                       <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-6">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Informações Básicas */}
                             <Card className="rounded-xl">
