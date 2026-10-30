@@ -186,7 +186,7 @@ export function HotelManagementPage() {
                     value={formData.features}
                     onChange={(e) => setFormData({ ...formData, features: e.target.value })}
                     rows={6}
-                    placeholder="Suíte individual&#10;3 refeições balanceadas&#10;1 passeio supervisionado"
+                    placeholder="Suíte individual&#10;3 refeições balanceadas&#10;Socialização canina"
                   />
                 </div>
 
