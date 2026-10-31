@@ -20,6 +20,7 @@ import Footer from '@/components/layout/Footer';
 import { toast } from 'sonner';
 import { usePuppies } from '../controllers/usePuppies';
 import ImageUploader from '@/components/ui/image-uploader';
+import { OptimizePhotosButton } from '@/components/admin/OptimizePhotosButton';
 import { differenceInWeeks, parseISO } from 'date-fns';
 
 const puppySchema = z.object({
@@ -137,7 +138,7 @@ const ageFromBirthDate = (birthDate: string): string | null => {
 };
 
 export const PuppyManagementPage = () => {
-  const { puppies, loading, error, createPuppy, updatePuppy, deletePuppy } = usePuppies();
+  const { puppies, loading, error, createPuppy, updatePuppy, deletePuppy, refetch } = usePuppies();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPuppy, setEditingPuppy] = useState<Puppy | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -288,6 +289,9 @@ export const PuppyManagementPage = () => {
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Gerenciamento de Filhotes</h1>
             <p className="text-muted-foreground">Cadastre e gerencie os filhotes do canil</p>
+            <div className="mt-4">
+              <OptimizePhotosButton tabela="puppies" bucket="puppy-images" aoTerminar={() => void refetch()} />
+            </div>
           </div>
 
           {/* Filters and Search */}

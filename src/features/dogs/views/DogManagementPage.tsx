@@ -18,6 +18,7 @@ import { z } from 'zod';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { toast } from 'sonner';
+import { OptimizePhotosButton } from '@/components/admin/OptimizePhotosButton';
 import { useDogs } from '../controllers/useDogs';
 import ImageUploader from '@/components/ui/image-uploader';
 
@@ -129,7 +130,7 @@ const FIELD_LABELS: Record<string, string> = {
 };
 
 export const DogManagementPage = () => {
-  const { dogs, loading, error, createDog, updateDog, deleteDog } = useDogs();
+  const { dogs, loading, error, createDog, updateDog, deleteDog, refetch } = useDogs();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingDog, setEditingDog] = useState<Dog | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -276,6 +277,9 @@ export const DogManagementPage = () => {
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Gerenciamento de Cães</h1>
             <p className="text-muted-foreground">Cadastre e gerencie os cães do canil</p>
+            <div className="mt-4">
+              <OptimizePhotosButton tabela="dogs" bucket="dog-images" aoTerminar={() => void refetch()} />
+            </div>
           </div>
 
           {/* Filters and Search */}
